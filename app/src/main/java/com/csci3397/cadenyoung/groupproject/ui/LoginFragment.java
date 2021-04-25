@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,7 +48,7 @@ public class LoginFragment extends Fragment {
     String password;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-
+    //TODO add checks for empty text fields
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -215,6 +216,9 @@ public class LoginFragment extends Fragment {
         fragmentTransaction.replace(R.id.fragmentContainer, new HomeFragment());
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();*/
+        Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
+        //intent.putExtra("name",name);
+        startActivity(intent);
     }
 
     private void moveToRegisterPage() {

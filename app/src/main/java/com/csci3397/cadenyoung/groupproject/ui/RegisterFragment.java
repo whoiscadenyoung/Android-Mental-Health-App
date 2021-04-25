@@ -34,7 +34,7 @@ public class RegisterFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-
+//TODO add checks for empty text fields
     public RegisterFragment() {
         // Required empty public constructor
     }

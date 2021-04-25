@@ -1,7 +1,8 @@
-package com.csci3397.cadenyoung.groupproject
+package com.csci3397.cadenyoung.groupproject;
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.csci3397.cadenyoung.groupproject.R
 import com.csci3397.cadenyoung.groupproject.ui.LoginFragment
 
 class MainActivity : AppCompatActivity() {
@@ -11,7 +12,6 @@ class MainActivity : AppCompatActivity() {
 
         /*var navController = Navigation.findNavController(this, R.id.fragment)
         //NavigationUI.setupWithNavController(bottomNavigationView, navController)
-
         var appBarConfiguration = AppBarConfiguration.Builder(
             R.id.loginJavaFragment,
             R.id.registerJavaFragment
@@ -23,7 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         var fragmentManager = supportFragmentManager
         var fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer,
+        fragmentTransaction.replace(
+            R.id.fragmentContainer,
             LoginFragment()
         )
         fragmentTransaction.commit()
