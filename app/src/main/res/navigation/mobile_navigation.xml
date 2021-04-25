@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.csci3397.cadenyoung.groupproject.ui.home.HomeFragment"
+        android:name="com.csci3397.cadenyoung.groupproject.ui.quiz.QuizFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
