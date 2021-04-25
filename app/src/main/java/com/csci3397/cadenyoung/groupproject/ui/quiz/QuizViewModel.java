@@ -1,14 +1,14 @@
-package com.csci3397.cadenyoung.groupproject.ui.home;
+package com.csci3397.cadenyoung.groupproject.ui.quiz;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class QuizViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public HomeViewModel() {
+    public QuizViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is home fragment");
     }

@@ -1,26 +1,21 @@
-package com.csci3397.cadenyoung.groupproject.ui.home;
+package com.csci3397.cadenyoung.groupproject.ui.quiz;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
 
-public class HomeFragment extends Fragment {
+public class QuizFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private QuizViewModel homeViewModel;
     private Button Back;
     private Button Next;
     private Quiz quiz;
@@ -32,7 +27,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+                new ViewModelProvider(this).get(QuizViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        final TextView textView = root.findViewById(R.id.question_view);
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
