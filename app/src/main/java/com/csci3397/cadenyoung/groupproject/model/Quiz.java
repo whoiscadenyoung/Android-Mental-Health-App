@@ -9,6 +9,7 @@ public class Quiz {
 
     public Quiz()
     {
+        quizQuestions = new Question[12];
         quizQuestions[0] = new Question(R.string.question_1);
         quizQuestions[1] = new Question(R.string.question_2);
         quizQuestions[2] = new Question(R.string.question_3);
@@ -21,7 +22,6 @@ public class Quiz {
         quizQuestions[9] = new Question(R.string.question_10);
         quizQuestions[10] = new Question(R.string.question_11);
         quizQuestions[11] = new Question(R.string.question_12);
-
         currentQuestion = -1;
 
     }
@@ -33,12 +33,29 @@ public class Quiz {
         }
         return quizQuestions[i];
     }
-
     public Question nextQuestion()
     {
         currentQuestion += 1;
         return quizQuestions[currentQuestion];
 
+    }
+
+    public Question previousQuestion()
+    {
+        currentQuestion -= 1;
+        return quizQuestions[currentQuestion];
+
+    }
+    public boolean isFinalQuestion()
+    {
+        if (currentQuestion == quizQuestions.length-1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
