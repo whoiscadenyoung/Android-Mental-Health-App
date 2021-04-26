@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class LoginFragment extends Fragment {
     String password;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    //TODO add checks for empty text fields
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -183,6 +184,11 @@ public class LoginFragment extends Fragment {
 
 
     private void signIn(String email, String password) {
+        Log.d(TAG, "signIn:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -211,11 +217,6 @@ public class LoginFragment extends Fragment {
 
 
     private void moveToHomepage() {
-        /*fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new HomeFragment());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
         Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
         //intent.putExtra("name",name);
         startActivity(intent);
@@ -227,5 +228,27 @@ public class LoginFragment extends Fragment {
         fragmentTransaction.replace(R.id.fragmentContainer, new RegisterFragment());
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = emailText.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            emailText.setError("Required");
+            valid = false;
+        } else {
+            emailText.setError(null);
+        }
+
+        String password = passwordText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            passwordText.setError("Required");
+            valid = false;
+        } else {
+            passwordText.setError(null);
+        }
+
+        return valid;
     }
 }

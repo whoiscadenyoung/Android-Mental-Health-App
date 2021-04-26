@@ -10,17 +10,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*var navController = Navigation.findNavController(this, R.id.fragment)
-        //NavigationUI.setupWithNavController(bottomNavigationView, navController)
-        var appBarConfiguration = AppBarConfiguration.Builder(
-            R.id.loginJavaFragment,
-            R.id.registerJavaFragment
-        ).build()
-        NavigationUI.setupActionBarWithNavController(
-            this, navController,
-            appBarConfiguration
-        )*/
-
         var fragmentManager = supportFragmentManager
         var fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(

@@ -1,5 +1,6 @@
 package com.csci3397.cadenyoung.groupproject.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,8 +35,7 @@ public class RegisterFragment extends Fragment {
     EditText firstNameText;
     EditText lastNameText;
     FirebaseAuth firebaseAuth;
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
+
 //TODO add checks for empty text fields
     public RegisterFragment() {
         // Required empty public constructor
@@ -47,12 +49,21 @@ public class RegisterFragment extends Fragment {
 
         firebaseAuth = FirebaseAuth.getInstance();
         registerButton = view.findViewById(R.id.registerButton);
+        newEmailText = view.findViewById(R.id.newEmailText);
+        newPasswordText = view.findViewById(R.id.newPasswordText);
+        firstNameText = view.findViewById(R.id.firstNameText);
+        lastNameText = view.findViewById(R.id.lastNameText);
+
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = newEmailText.getText().toString();
-                String password = newPasswordText.getText().toString();
-                createAccount(email, password);
+                if (!validateForm()) {
+                    return;
+                }else {
+                    String email = newEmailText.getText().toString();
+                    String password = newPasswordText.getText().toString();
+                    createAccount(email, password);
+                }
             }
         });
         return view;
@@ -64,6 +75,11 @@ public class RegisterFragment extends Fragment {
     }
 
     private void createAccount(String email, String password){
+        Log.d(TAG, "createAccount:" + email);
+        if (!validateForm()) {
+            return;
+        }
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -87,10 +103,46 @@ public class RegisterFragment extends Fragment {
     }
 
     private void moveToHomepage() {
-        /*fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragmentContainer, new HomeFragment());
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();*/
+        Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
+        //intent.putExtra("name",name);
+        startActivity(intent);
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String firstName = firstNameText.getText().toString();
+        if (TextUtils.isEmpty(firstName)) {
+            firstNameText.setError("Required");
+            valid = false;
+        } else {
+            firstNameText.setError(null);
+        }
+
+        String lastName = lastNameText.getText().toString();
+        if (TextUtils.isEmpty(lastName)) {
+            lastNameText.setError("Required");
+            valid = false;
+        } else {
+            lastNameText.setError(null);
+        }
+
+        String email = newEmailText.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            newEmailText.setError("Required");
+            valid = false;
+        } else {
+            newEmailText.setError(null);
+        }
+
+        String password = newPasswordText.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            newPasswordText.setError("Required");
+            valid = false;
+        } else {
+            newPasswordText.setError(null);
+        }
+
+        return valid;
     }
 }

@@ -1,6 +1,25 @@
 <resources>
     <string name="app_name">Group Project</string>
-    <!-- Strings related to login -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_stats">Stats</string>
+    <string name="title_map">Map</string>
+
+    <string name="maps_api_key">AIzaSyA4KKSTCzFaIbNllHJz_YNNhv9xGF09vPQ</string>
+
+    <string name="question_1">Little interest or pleasure in doing things</string>
+    <string name="question_2">Feeling down, depressed, or hopeless</string>
+    <string name="question_3">Trouble falling or staying asleep, or sleeping too much</string>
+    <string name="question_4">Feeling tired or having little energy</string>
+    <string name="question_5">Poor appetite or overeating </string>
+    <string name="question_6">Feeling bad about yourself or that you are a failure or have let yourself or your family down</string>
+    <string name="question_7">Trouble concentrating on things, such as reading the newspaper or watching television</string>
+    <string name="question_8">Moving or speaking so slowly that other people could have noticed. Or the opposite being so fidgety or restless that you have been moving around a lot more than usual</string>
+    <string name="question_9">Thoughts that you would be better off dead, or of hurting yourself</string>
+    <string name="question_10">How close are you to getting the recommended daily water intake? (The recommended water intake for a man is 15 cups, 11 for a woman)</string>
+    <string name="question_11">How would you rate your activity for today</string>
+    <string name="question_12">How close do you think you are to the recommended hours of sleep (Recommended hours of sleep ( for ages 13-18) 8-10 hours, ( for ages 18++) 7++ hours)</string>
+
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -9,6 +28,4 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
