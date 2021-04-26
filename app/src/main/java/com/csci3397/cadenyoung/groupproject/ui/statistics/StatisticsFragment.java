@@ -1,10 +1,12 @@
 package com.csci3397.cadenyoung.groupproject.ui.statistics;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,19 +21,30 @@ public class StatisticsFragment extends Fragment {
     private Stats stats;
     private StatisticsViewModel statisticsViewModel;
 
+    private TableLayout tableLayout;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         statisticsViewModel = new ViewModelProvider(this).get(StatisticsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_statistics, container, false);
 
-         stats = new Stats();
-         stats.updateStat("eating", 0.8);
+        tableLayout = root.findViewById(R.id.tableLayout);
 
-         for (Stat stat : stats.getStats()) {
-             //ImageView imageView = new ImageView(this, stat.getImageId());
-             String desc = getString(stat.getDescId());
-             String name = stat.getName();
-             Log.d("STAT", name + ": " + desc);
-         }
+        stats = new Stats();
+        stats.updateStat("eating", 0.8);
+
+        for (Stat stat : stats.getStats()) {
+            TableRow row = new TableRow(requireActivity());
+
+            TextView name = new TextView(requireActivity());
+            name.setText(stat.getName());
+            row.addView(name);
+
+            TextView desc = new TextView(requireActivity());
+            desc.setText(getString(stat.getDescId()));
+            row.addView(desc);
+
+            tableLayout.addView(row);
+        }
 
 //        final TextView textView = root.findViewById(R.id.text_notifications);
 //        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
