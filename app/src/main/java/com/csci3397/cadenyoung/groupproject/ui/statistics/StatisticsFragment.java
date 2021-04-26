@@ -1,6 +1,7 @@
 package com.csci3397.cadenyoung.groupproject.ui.statistics;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,10 @@ public class StatisticsFragment extends Fragment {
          stats.updateStat("eating", 0.8);
 
          for (Stat stat : stats.getStats()) {
-
+             //ImageView imageView = new ImageView(this, stat.getImageId());
+             String desc = getString(stat.getDescId());
+             String name = stat.getName();
+             Log.d("STAT", name + ": " + desc);
          }
 
 //        final TextView textView = root.findViewById(R.id.text_notifications);

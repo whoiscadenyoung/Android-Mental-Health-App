@@ -10,10 +10,14 @@ public class QuizViewModel extends ViewModel {
 
     public QuizViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is quiz fragment");
+
     }
 
     public LiveData<String> getText() {
         return mText;
+    }
+
+    public void setText(String text ) {
+        mText.setValue(text);
     }
 }
