@@ -20,6 +20,20 @@
     <string name="question_11">How would you rate your activity for today</string>
     <string name="question_12">How close do you think you are to the recommended hours of sleep (Recommended hours of sleep ( for ages 13-18) 8-10 hours, ( for ages 18++) 7++ hours)</string>
 
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 
+    <string name="emotion_desc">Indicator of how you are feeling emotionally—overwhelmed, burdened, hopeless, etc</string>
+    <string name="eating_desc">Indicator of your eating habits—over or under-eating, eating irregularly, or lacking nutrition</string>
+    <string name="stress_desc">Indicator of stress based on answers to questions about life commitments like school and work</string>
+    <string name="screen_desc">Measurement of how beneficial your screen time is for your mental and physical health</string>
+    <string name="water_desc">Measures your water consumption in line with the average for age, size, gender, etc</string>
+    <string name="fitness_desc">Indicates if you are getting a healthy amount of physical activity on a daily basis</string>
 
 </resources>

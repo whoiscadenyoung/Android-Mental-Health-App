@@ -3,21 +3,21 @@ package com.csci3397.cadenyoung.groupproject.model;
 public class Coordinate {
 
     public Coordinate(Double lattitude, Double longitude) {
-        this.lattitude = lattitude;
+        this.latitude = lattitude;
         this.longitude = longitude;
     }
 
-    private Double lattitude;
+    private Double latitude;
     private Double longitude;
 
-    public Double getLattitude() {
-        return lattitude;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setLattitude(Double lattitude) {
-        if (lattitude > -90 && lattitude< 90)
+    public void setLatitude(Double latitude) {
+        if (latitude > -90 && latitude< 90)
         {
-            this.lattitude = lattitude;
+            this.latitude = latitude;
         }
 
     }

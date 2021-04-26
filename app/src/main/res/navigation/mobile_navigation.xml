@@ -19,8 +19,12 @@
 
 
     <fragment
-        android:id="@+id/navigation_map"
+        android:id="@+id/navigation_map_former"
         android:name="com.csci3397.cadenyoung.groupproject.ui.map.MapFragment"
-        android:label="@string/title_map"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/navigation_map"
+        android:name="com.csci3397.cadenyoung.groupproject.ui.map.LocationFragment"
+        android:label="@string/title_map"
+        tools:layout="@layout/fragment_location" />
 </navigation>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/loginJavaFragment">
+
+    <fragment
+        android:id="@+id/loginJavaFragment"
+        android:name="com.csci3397.cadenyoung.groupproject.ui.LoginFragment"
+        android:label="fragment_loginjava"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginJavaFragment_to_registerJavaFragment"
+            app:destination="@id/registerJavaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerJavaFragment"
+        android:name="com.csci3397.cadenyoung.groupproject.ui.RegisterFragment"
+        android:label="fragment_registerjava"
+        tools:layout="@layout/fragment_register" />
+</navigation>
