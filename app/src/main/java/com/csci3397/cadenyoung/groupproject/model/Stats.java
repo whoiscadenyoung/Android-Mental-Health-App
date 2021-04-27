@@ -11,19 +11,19 @@ public class Stats {
     public Stats() {
         stats = new Hashtable<String, Stat>();
 
-        this.addStat(R.drawable.stress, "emotion", R.string.emotion_desc);
-        this.addStat(R.drawable.stress, "stress", R.string.stress_desc);
-        this.addStat(R.drawable.screen, "screen", R.string.screen_desc);
-        this.addStat(R.drawable.eating, "eating", R.string.eating_desc);
-        this.addStat(R.drawable.water, "water", R.string.water_desc);
-        this.addStat(R.drawable.fitness, "fitness", R.string.fitness_desc);
+        this.addStat(R.drawable.stress, "emotion", R.string.emotion_desc, R.color.stat_emotional);
+        this.addStat(R.drawable.stress, "stress", R.string.stress_desc, R.color.stat_stress);
+        this.addStat(R.drawable.screen, "screen", R.string.screen_desc, R.color.stat_screen);
+        this.addStat(R.drawable.eating, "eating", R.string.eating_desc, R.color.stat_eating);
+        this.addStat(R.drawable.water, "water", R.string.water_desc, R.color.stat_water);
+        this.addStat(R.drawable.fitness, "fitness", R.string.fitness_desc, R.color.stat_fitness);
     }
 
-    private void addStat(int imageId, String name, int desc) {
-        if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, desc));
+    private void addStat(int imageId, String name, int descId, int colorId) {
+        if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, descId, colorId));
     }
 
-    public void updateStat(String name, double newValue) {
+    public void updateStat(String name, int newValue) {
         if (stats.containsKey(name)) stats.get(name).setValue(newValue);
     }
 
