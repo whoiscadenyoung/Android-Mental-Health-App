@@ -4,6 +4,7 @@
     <string name="title_home">Home</string>
     <string name="title_stats">Stats</string>
     <string name="title_map">Map</string>
+    <string name="title_quiz">Quiz</string>
 
     <string name="maps_api_key">AIzaSyA4KKSTCzFaIbNllHJz_YNNhv9xGF09vPQ</string>
 
