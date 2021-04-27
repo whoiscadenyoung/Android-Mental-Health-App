@@ -7,7 +7,7 @@
               android:layout_height="wrap_content">
 
   <ImageView
-      android:id="@+id/imageView"
+      android:id="@+id/statImage"
       android:layout_width="100dp"
       android:layout_height="100dp"
       tools:src="@tools:sample/avatars" />
@@ -35,7 +35,7 @@
         tools:text="This is a description of the statistic" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/statBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

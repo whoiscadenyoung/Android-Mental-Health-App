@@ -31,23 +31,14 @@ public class StatisticsFragment extends Fragment {
         statisticsViewModel = new ViewModelProvider(this).get(StatisticsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_statistics, container, false);
 
+        stats = new Stats();
+        stats.updateStat("eating", 80);
+
         recyclerView = root.findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(getActivity());
         adaptor = new CustomAdapter(stats.getStats());
         recyclerView.setAdapter(adaptor);
-
-        stats = new Stats();
-        stats.updateStat("eating", 80);
-
-        /*for (Stat stat : stats.getStats()) {
-
-            TextView name = new TextView(requireActivity());
-            name.setText(stat.getName());
-
-            TextView desc = new TextView(requireActivity());
-            desc.setText(getString(stat.getDescId()));
-
-        }*/
+        recyclerView.setLayoutManager(layoutManager);
 
 //        final TextView textView = root.findViewById(R.id.text_notifications);
 //        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
