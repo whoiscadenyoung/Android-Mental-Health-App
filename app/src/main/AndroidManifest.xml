@@ -35,7 +35,7 @@
             android:value="AIzaSyA4KKSTCzFaIbNllHJz_YNNhv9xGF09vPQ" />
 
 
-        <activity android:name=".HomeMainActivity"
+        <activity android:name=".MainActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
