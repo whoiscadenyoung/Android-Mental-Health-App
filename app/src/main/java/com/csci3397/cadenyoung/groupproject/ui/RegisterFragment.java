@@ -36,7 +36,6 @@ public class RegisterFragment extends Fragment {
     EditText lastNameText;
     FirebaseAuth firebaseAuth;
 
-//TODO add checks for empty text fields
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -140,9 +139,29 @@ public class RegisterFragment extends Fragment {
             newPasswordText.setError("Required");
             valid = false;
         } else {
-            newPasswordText.setError(null);
+            if(password.length() < 6) {
+                newPasswordText.setError("Password must contain at least 6 characters");
+                valid = false;
+            }else {
+                newPasswordText.setError(null);
+            }
         }
 
         return valid;
+    }
+
+    private void signOut() {
+        //firebase sign out
+        firebaseAuth.signOut();
+        //updateUI(null);
+
+        // Google sign out
+        /*googleSignInClient.signOut().addOnCompleteListener(requireActivity(),
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //updateUI(null);
+                    }
+                });*/
     }
 }
