@@ -2,7 +2,6 @@ package com.csci3397.cadenyoung.groupproject.model;
 
 import com.csci3397.cadenyoung.groupproject.R;
 
-import java.util.Collection;
 import java.util.Hashtable;
 
 public class Stats {
@@ -23,11 +22,11 @@ public class Stats {
         if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, descId, colorId));
     }
 
-    public void updateStat(String name, int newValue) {
-        if (stats.containsKey(name)) stats.get(name).setValue(newValue);
+    public void updateStat(String name, int newProgress) {
+        if (stats.containsKey(name)) stats.get(name).setProgress(newProgress);
     }
 
-    public Collection<Stat> getStats() {
-        return stats.values();
+    public Stat[] getStats() {
+        return stats.values().toArray(new Stat[0]);
     }
 }
