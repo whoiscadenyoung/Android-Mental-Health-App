@@ -36,6 +36,12 @@ public class RegisterFragment extends Fragment {
     EditText lastNameText;
     FirebaseAuth firebaseAuth;
 
+    private String firstName;
+    private String lastName;
+    private String email;
+
+    //private String password;
+
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -62,6 +68,7 @@ public class RegisterFragment extends Fragment {
                     String email = newEmailText.getText().toString();
                     String password = newPasswordText.getText().toString();
                     createAccount(email, password);
+                    addToDB();
                 }
             }
         });
@@ -110,7 +117,7 @@ public class RegisterFragment extends Fragment {
     private boolean validateForm() {
         boolean valid = true;
 
-        String firstName = firstNameText.getText().toString();
+        firstName = firstNameText.getText().toString();
         if (TextUtils.isEmpty(firstName)) {
             firstNameText.setError("Required");
             valid = false;
@@ -118,7 +125,7 @@ public class RegisterFragment extends Fragment {
             firstNameText.setError(null);
         }
 
-        String lastName = lastNameText.getText().toString();
+        lastName = lastNameText.getText().toString();
         if (TextUtils.isEmpty(lastName)) {
             lastNameText.setError("Required");
             valid = false;
@@ -126,7 +133,7 @@ public class RegisterFragment extends Fragment {
             lastNameText.setError(null);
         }
 
-        String email = newEmailText.getText().toString();
+        email = newEmailText.getText().toString();
         if (TextUtils.isEmpty(email)) {
             newEmailText.setError("Required");
             valid = false;
@@ -165,6 +172,10 @@ public class RegisterFragment extends Fragment {
                 });*/
     }
 
+    private void addToDB()
+    {
+
+    }
 //        insertBtn.setOnClickListener(new View.OnClickListener() {
 //        @Override
 //        public void onClick(View v) {

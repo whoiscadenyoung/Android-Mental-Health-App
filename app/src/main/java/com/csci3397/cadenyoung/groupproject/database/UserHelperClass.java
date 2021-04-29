@@ -1,14 +1,25 @@
 package com.csci3397.cadenyoung.groupproject.database;
 
 public class UserHelperClass {
-    String name, contact, dob;
+    String name;
+    String contact;
 
-    public UserHelperClass(String name, String contact, String dob) {
+
+
+    String userID;
+
+    public UserHelperClass(String name, String email, String userID) {
         this.name = name;
-        this.contact = contact;
-        this.dob = dob;
+        this.contact = email;
+        this.userID = userID;
+    }
+    public String getUserID() {
+        return userID;
     }
 
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
     public String getName() {
         return name;
     }
@@ -17,20 +28,12 @@ public class UserHelperClass {
         this.name = name;
     }
 
-    public String getContact() {
+    public String getEmail() {
         return contact;
     }
 
-    public void setContact(String contact) {
+    public void setEmail(String contact) {
         this.contact = contact;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
     }
 
 }
