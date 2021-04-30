@@ -128,6 +128,7 @@ public class LoginFragment extends Fragment {
         if (firebaseUser != null) {
             //When user is already signed in
             //Redirect to homepage
+            Log.d("User: ", firebaseAuth.getUid());
             moveToHomepage();
         }
     }
@@ -136,6 +137,7 @@ public class LoginFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d("google sign in", "got to 1");
+        Log.d("request Code", String.valueOf(requestCode));
         //Check condition
         if(requestCode == 100) {
             //When request code is equal to 100
@@ -187,6 +189,9 @@ public class LoginFragment extends Fragment {
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }
+            } else{
+                Log.d("Sign In", "Was unsuccessful");
+                Log.d("Sign In", signInAccountTask.getException().toString());
             }
         }
     }
