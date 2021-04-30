@@ -174,7 +174,6 @@ public class LocationFragment extends Fragment {
         });
     }
 
-    //TODO
     private void addToDB(LatLng loc) {
         //Insert current user's last known location into locations table
         //Create table for locations
