@@ -3,9 +3,6 @@ package com.csci3397.cadenyoung.groupproject.database;
 public class UserHelperClass {
     String name;
     String contact;
-
-
-
     String userID;
 
     public UserHelperClass(String name, String email, String userID) {

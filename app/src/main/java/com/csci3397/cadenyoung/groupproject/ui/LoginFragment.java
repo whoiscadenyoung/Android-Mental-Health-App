@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,6 +34,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.content.ContentValues.TAG;
 
@@ -49,6 +55,8 @@ public class LoginFragment extends Fragment {
     String password;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+    FirebaseDatabase db;
+    DatabaseReference myRef;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -105,7 +113,12 @@ public class LoginFragment extends Fragment {
                 startActivityForResult(intent, 100);
             }
         });
+        return view;
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
         //Initialize firebase auth
         firebaseAuth = FirebaseAuth.getInstance();
         //Initialize firebase user
@@ -116,16 +129,7 @@ public class LoginFragment extends Fragment {
             //Redirect to homepage
             moveToHomepage();
         }
-        return view;
     }
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-        //Check if user is signed in (non-null) and update UI accordingly
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if(currentUser != null) moveToHomepage();
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -163,7 +167,7 @@ public class LoginFragment extends Fragment {
                                         if(task.isSuccessful()) {
                                             //When task is successful
                                             //Redirect to homepage
-                                            getUser();
+                                            addUserToDB();
                                             moveToHomepage();
                                             Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
                                         } else {
@@ -179,7 +183,24 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void getUser() {
+    private void addUserToDB() {
+        db = FirebaseDatabase.getInstance();
+        myRef = db.getReference("users");
+        if(firebaseAuth.getUid() == null) Log.d("userID", "null");
+        String name = firebaseAuth.getCurrentUser().getDisplayName();
+        String email = firebaseAuth.getCurrentUser().getEmail();
+        String userID = firebaseAuth.getUid();
+
+        myRef.child("users").child(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    UserHelperClass user = new UserHelperClass(name, email, userID);
+                    myRef.child(userID).setValue(user);
+                    Log.d("registered", "into database");
+                }
+            }
+        });
     }
 
 
@@ -197,7 +218,6 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            getUser();
                             moveToHomepage();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -218,7 +238,6 @@ public class LoginFragment extends Fragment {
 
     private void moveToHomepage() {
         Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
-        //intent.putExtra("name",name);
         startActivity(intent);
     }
 
@@ -248,7 +267,6 @@ public class LoginFragment extends Fragment {
         } else {
             passwordText.setError(null);
         }
-
         return valid;
     }
 }

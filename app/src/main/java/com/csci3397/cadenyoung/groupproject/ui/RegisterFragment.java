@@ -19,11 +19,14 @@ import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static android.content.ContentValues.TAG;
 
@@ -40,7 +43,8 @@ public class RegisterFragment extends Fragment {
     private String lastName;
     private String email;
 
-    //private String password;
+    FirebaseDatabase db;
+    DatabaseReference myRef;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -68,23 +72,16 @@ public class RegisterFragment extends Fragment {
                     String email = newEmailText.getText().toString();
                     String password = newPasswordText.getText().toString();
                     createAccount(email, password);
-                    addToDB();
                 }
             }
         });
         return view;
     }
 
-    private void createNewUser() {
-        String firstName = firstNameText.getText().toString();
-        String lastName = lastNameText.getText().toString();
-    }
 
     private void createAccount(String email, String password){
         Log.d(TAG, "createAccount:" + email);
-        if (!validateForm()) {
-            return;
-        }
+        if (!validateForm()) return;
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
@@ -94,15 +91,13 @@ public class RegisterFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            //updateUI(user);
-                            createNewUser();
                             moveToHomepage();
+                            addToDB();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getActivity(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
                     }
                 });
@@ -110,7 +105,6 @@ public class RegisterFragment extends Fragment {
 
     private void moveToHomepage() {
         Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
-        //intent.putExtra("name",name);
         startActivity(intent);
     }
 
@@ -157,24 +151,12 @@ public class RegisterFragment extends Fragment {
         return valid;
     }
 
-    private void signOut() {
-        //firebase sign out
-        firebaseAuth.signOut();
-        //updateUI(null);
-
-        // Google sign out
-        /*googleSignInClient.signOut().addOnCompleteListener(requireActivity(),
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //updateUI(null);
-                    }
-                });*/
-    }
-
-    private void addToDB()
-    {
-
+    private void addToDB() {
+        db = FirebaseDatabase.getInstance();
+        myRef = db.getReference("users");
+        UserHelperClass user = new UserHelperClass(firstName + " " + lastName, email, firebaseAuth.getUid());
+        myRef.child(firebaseAuth.getUid()).setValue(user);
+        Log.d("registered", "into database");
     }
 //        insertBtn.setOnClickListener(new View.OnClickListener() {
 //        @Override
