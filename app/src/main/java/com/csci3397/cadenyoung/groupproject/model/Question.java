@@ -3,16 +3,18 @@ package com.csci3397.cadenyoung.groupproject.model;
 public class Question {
     private int imageId;
     private int textId;
-    private int Answer;
+    private int answer;
+    private String questionType;
 
-    public  Question(int textId){
+    public  Question(int textId, String type){
         this.textId = textId;
     }
     public Question(int imageId, int textId) {
         this.imageId = imageId;
         this.textId = textId;
-        //Answer = answer;
+        this.answer = -1;
     }
+
 
     public int getImageId() {
         return imageId;
@@ -31,11 +33,11 @@ public class Question {
     }
 
     public int getAnswer() {
-        return Answer;
+        return answer;
     }
 
     public void setAnswer(int answer) {
-        Answer = answer;
+        this.answer = answer;
     }
 
 

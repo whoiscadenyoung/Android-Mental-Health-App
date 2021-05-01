@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
@@ -47,6 +50,8 @@ public class QuizFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        quizViewModel.setText(getString(R.string.question_instructions));
         next = view.findViewById(R.id.next);
         back = view.findViewById(R.id.back);
         seekBarAnswer = (SeekBar)view.findViewById(R.id.questionAnswer);
@@ -71,14 +76,16 @@ public class QuizFragment extends Fragment {
                     currentQuestion = quiz.nextQuestion();
                     int tempAnswer = seekBarAnswer.getProgress();
                     currentQuestion.setAnswer(tempAnswer);
-                    Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
+                    setProgressBar();
                 }
 
                 else
                 {
-                    //TODO instead of displaying just the question text have a way to also display if they have answered the question
+
                     next.setText("Submit");
+                    navigateToHome();
                     //TODO have the submit button take you back to the home page
                 }
             }
@@ -87,11 +94,46 @@ public class QuizFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!quiz.isInstructionsQuestion())
+                {
+                    currentQuestion = quiz.previousQuestion();
+                    quizViewModel.setText(getString(currentQuestion.getTextId()));
+                    setProgressBar();
+                }
+                else
+                {
+                    navigateToHome();
+                }
                 //TODO create a way to back to the saved instance of the question
+
             }
         });
     }
-    //trying to push
-    //test
+
+    private void setProgressBar()
+    {
+        int nextAnswer = quiz.getNextAnswer();
+        if (nextAnswer == -1)
+        {
+            seekBarAnswer.setProgress(0);
+        }
+        else
+        {
+            seekBarAnswer.setProgress(nextAnswer);
+        }
+    }
+
+    private void navigateToHome() {
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(
+                R.id.action_navigation_quiz_to_home,
+                null,
+                new NavOptions.Builder()
+                        .setEnterAnim(android.R.animator.fade_in)
+                        .setExitAnim(android.R.animator.fade_out)
+                        .build()
+        );
+    }
+
 
 }
