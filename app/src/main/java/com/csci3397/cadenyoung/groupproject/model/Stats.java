@@ -23,7 +23,10 @@ public class Stats {
     }
 
     public void updateStat(String name, int newProgress) {
-        if (stats.containsKey(name)) stats.get(name).setProgress(newProgress);
+        if (stats.containsKey(name)) {
+            Stat stat = stats.get(name);
+            stat.setProgress(stat.getProgress() + newProgress);
+        }
     }
 
     public Stat[] getStats() {

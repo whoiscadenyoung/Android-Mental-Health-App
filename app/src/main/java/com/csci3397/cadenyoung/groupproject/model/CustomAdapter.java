@@ -69,9 +69,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             res = v.getResources();
         }
 
-        public TextView getStatName() {
-            return statName;
-        }
+        public TextView getStatName() {return statName;}
         public ImageView getStatImage() {return statImage;}
         public TextView getStatDesc() {return statDesc;}
         public ProgressBar getStatBar() {return statBar;}
@@ -79,9 +77,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
     // Initialize data set for adaptor in the constructor
-    public CustomAdapter(Stat[] stats) {
-        this.stats = stats;
-    }
+    public CustomAdapter(Stat[] stats) {this.stats = stats;}
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
     // Create new views (invoked by the layout manager)
@@ -118,7 +114,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         // Load in the description ID, pull description from strings, set text in view
         int descId = stat.getDescId();
-        String statDesc = resources.getString(R.string.emotion_desc);
+        String statDesc = resources.getString(descId);
         viewHolder.getStatDesc().setText(statDesc);
 
         // Set the progress bar status and color
