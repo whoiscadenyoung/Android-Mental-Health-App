@@ -22,14 +22,35 @@ public class Stats {
         if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, descId, colorId));
     }
 
-    public void updateStat(String name, int newProgress) {
-        if (stats.containsKey(name)) {
-            Stat stat = stats.get(name);
-            stat.setProgress(stat.getProgress() + newProgress);
+    public void updateStat(String statName, int quizAnswer) {
+        if (stats.containsKey(statName)) {
+            Stat stat = stats.get(statName);
+            int statProgress = stat.getProgress();
+            double change;
+            switch (quizAnswer) {
+                case 1:
+                    change = -0.25;
+                    break;
+                case 2:
+                    change = -0.1;
+                    break;
+                case 3:
+                    change = 0;
+                    break;
+                case 4:
+                    change = 0.1;
+                    break;
+                case 5:
+                    change = 0.25;
+                    break;
+                default:
+                    change = 0;
+                    break;
+            }
+            int changeProgress = (int) (statProgress * change);
+            stat.setProgress(changeProgress + statProgress);
         }
     }
 
-    public Stat[] getStats() {
-        return stats.values().toArray(new Stat[0]);
-    }
+    public Stat[] getStats() {return stats.values().toArray(new Stat[0]);}
 }
