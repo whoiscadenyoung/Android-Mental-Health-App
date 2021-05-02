@@ -138,7 +138,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("google sign in", "got to 1");
         Log.d("request Code", String.valueOf(requestCode));
         //Check condition
         if(requestCode == 100) {
@@ -153,7 +152,6 @@ public class LoginFragment extends Fragment {
                 String s = "Google sign in successful";
                 //Display toast
                 Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-                Log.d("google sign in", "got to 2");
                 try {
                     //Initialize sign in account
                     GoogleSignInAccount googleSignInAccount = signInAccountTask
@@ -162,7 +160,6 @@ public class LoginFragment extends Fragment {
                     if(googleSignInAccount != null) {
                         //When sign in account is not equal to null
                         //Initialize auth credential
-                        Log.d("google sign in", "got to 3");
                         AuthCredential authCredential = GoogleAuthProvider
                                 .getCredential(googleSignInAccount.getIdToken(),
                                         null);
@@ -173,17 +170,15 @@ public class LoginFragment extends Fragment {
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         //Check condition
                                         if(task.isSuccessful()) {
-                                            Log.d("google sign in", "got to 4");
                                             //When task is successful
                                             //Redirect to homepage
                                             if(task.getResult().getAdditionalUserInfo().isNewUser()){
                                                 addUserToDB(firebaseAuth.getCurrentUser());
-                                                Log.d("google sign in", "got to 5");
                                             }
                                             moveToHomepage();
                                             Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(getActivity(), "sign in UNsuccessful" , Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "sign in Unsuccessful" , Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -199,7 +194,6 @@ public class LoginFragment extends Fragment {
     }
 
     private void addUserToDB(FirebaseUser user) {
-        Log.d("google sign in", "got to 6");
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
         if(user.getUid() == null) Log.d("userID", "null");
