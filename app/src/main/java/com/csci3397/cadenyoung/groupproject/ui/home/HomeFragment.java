@@ -1,5 +1,6 @@
 package com.csci3397.cadenyoung.groupproject.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,16 +16,22 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
+import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Stat;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.ui.statistics.StatisticsViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class HomeFragment extends Fragment {
 
     private Button goToQuizBtn;
     private HomeViewModel homeViewModel;
+    private Button logOutButton;
+    FirebaseAuth firebaseAuth;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +55,20 @@ public class HomeFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
+
+        logOutButton = root.findViewById(R.id.logOutButton);
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firebaseAuth = FirebaseAuth.getInstance();
+                //firebase sign out
+                firebaseAuth.signOut();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                //intent.putExtra("name",name);
+                startActivity(intent);
+            }
+        });
+
         return root;
     }
 

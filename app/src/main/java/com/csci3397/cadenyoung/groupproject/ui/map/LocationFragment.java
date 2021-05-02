@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.database.LocationHelperClass;
+import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -35,10 +37,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class LocationFragment extends Fragment {
     private FusedLocationProviderClient client;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase db;
+    private DatabaseReference myRef;
 
     //@Nullable
     @Override
@@ -145,6 +153,8 @@ public class LocationFragment extends Fragment {
                 //Initialize marker options
                 MarkerOptions markerOptions = new MarkerOptions();
                 if (loc != null) {
+                    //Add location to db
+                    addToDB(loc);
                     //Set position of marker
                     markerOptions.position(loc);
                     //Set title of marker
@@ -162,5 +172,17 @@ public class LocationFragment extends Fragment {
                 googleMap.addMarker(markerOptions);
             }
         });
+    }
+
+    private void addToDB(LatLng loc) {
+        //Insert current user's last known location into locations table
+        //Create table for locations
+        db = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        myRef = db.getReference("locations");
+        String userID = firebaseAuth.getUid();
+        LocationHelperClass lastLoc = new LocationHelperClass(loc);
+        myRef.child(userID).setValue(lastLoc);
+
     }
 }

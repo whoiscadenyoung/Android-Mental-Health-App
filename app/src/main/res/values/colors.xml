@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="stat_emotional">#6200EE</color>
+    <color name="stat_eating">#11C13A</color>
+    <color name="stat_stress">#EE001B</color>
+    <color name="stat_screen">#EEA500</color>
+    <color name="stat_water">#4CC6FC</color>
+    <color name="stat_fitness">#E9436B</color>
 </resources>
