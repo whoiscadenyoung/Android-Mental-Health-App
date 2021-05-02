@@ -32,6 +32,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -229,15 +231,14 @@ public class LoginFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed. Incorrect email or password.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                            //checkForMultiFactorFailure(task.getException());
-                        }
+                            if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                passwordText.setError("The password is invalid or the user does not have a password");
+                            }
+                            if(task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                emailText.setError("Email is not registered");
+                            }
 
-                        /*if (!task.isSuccessful()) {
-                            mBinding.status.setText(R.string.auth_failed);
-                        }*/
+                        }
                     }
                 });
     }

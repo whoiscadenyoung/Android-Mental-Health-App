@@ -45,7 +45,7 @@
         </activity>
 
         <activity android:name=".HomeMainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -159,6 +160,9 @@ public class LocationFragment extends Fragment {
                     markerOptions.position(loc);
                     //Set title of marker
                     markerOptions.title(loc.latitude + ":" + loc.longitude);
+                    //Set user avatar
+                    //TODO
+                   // markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.userAvatar)));
                     //Remove all markers
                     googleMap.clear();
                     //Animate to zoom on the marker
