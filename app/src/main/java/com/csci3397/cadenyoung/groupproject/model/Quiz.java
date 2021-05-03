@@ -16,15 +16,15 @@ public class Quiz {
         quizQuestions.add(new Question(R.string.question_3, "emotion"));
         quizQuestions.add(new Question(R.string.question_4, "emotion"));
         quizQuestions.add(new Question(R.string.question_5, "emotion"));
-        quizQuestions.add(new Question(R.string.question_6, "emotion"));
-        quizQuestions.add(new Question(R.string.question_7, "emotion"));
-        quizQuestions.add(new Question(R.string.question_8, "emotion"));
-        quizQuestions.add(new Question(R.string.question_9,"emotion"));
-        quizQuestions.add(new Question(R.string.question_10, "water"));
-        quizQuestions.add(new Question(R.string.question_11, "fitness"));
-        quizQuestions.add(new Question(R.string.question_12, "sleep"));
-        quizQuestions.add(new Question(R.string.question_13, "eating"));
-        quizQuestions.add(new Question(R.string.question_14, "eating"));
+//        quizQuestions.add(new Question(R.string.question_6, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_7, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_8, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_9,"emotion"));
+//        quizQuestions.add(new Question(R.string.question_10, "water"));
+//        quizQuestions.add(new Question(R.string.question_11, "fitness"));
+//        quizQuestions.add(new Question(R.string.question_12, "sleep"));
+//        quizQuestions.add(new Question(R.string.question_13, "eating"));
+//        quizQuestions.add(new Question(R.string.question_14, "eating"));
         currentQuestion = -1;
 
     }
@@ -39,7 +39,7 @@ public class Quiz {
 
     public Question nextQuestion()
     {
-        if (currentQuestion <= quizQuestions.size())
+        if (currentQuestion < quizQuestions.size())
         {
             currentQuestion += 1;
         }
@@ -53,7 +53,7 @@ public class Quiz {
 
     public Question previousQuestion()
     {
-        if (currentQuestion >= 0 )
+        if (currentQuestion <= -1 )
         {
             currentQuestion -= 1;
         }
@@ -72,12 +72,30 @@ public class Quiz {
 
     public boolean isFinalQuestion()
     {
-        return currentQuestion == quizQuestions.size() - 1;
+        return currentQuestion == quizQuestions.size() -1;
     }
 
     public int getNextAnswer()
     {
-        return quizQuestions.get(currentQuestion + 1).getAnswer();
+        if (currentQuestion < quizQuestions.size() -1 )
+        {
+            return quizQuestions.get(currentQuestion + 1).getAnswer();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        String temp = "";
+        for (int i =0; i < quizQuestions.size(); i++)
+        {
+            temp += quizQuestions.get(i);
+        }
+        return temp;
     }
 
 }

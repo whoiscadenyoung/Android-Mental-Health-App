@@ -1,6 +1,7 @@
 package com.csci3397.cadenyoung.groupproject.ui.quiz;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
+
+import static android.content.ContentValues.TAG;
 
 public class QuizFragment extends Fragment {
 
@@ -75,7 +78,7 @@ public class QuizFragment extends Fragment {
                     currentQuestion = quiz.nextQuestion();
                     int tempAnswer = seekBarAnswer.getProgress();
                     currentQuestion.setAnswer(tempAnswer);
-                    Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
                     setProgressBar();
                 }
@@ -85,6 +88,7 @@ public class QuizFragment extends Fragment {
 
                     next.setText("Submit");
                     navigateToHome();
+                    Log.d("Quiz Submitted", quiz.toString());
                     //TODO have the submit button take you back to the home page
                 }
             }
