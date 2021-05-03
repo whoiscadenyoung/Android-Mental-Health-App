@@ -8,7 +8,7 @@
 
     <string name="maps_api_key">AIzaSyBi50vULcwsdebpsILZxQ9lyX6L6Oxc3kA</string>
 
-    <string name="question_instructions">For each of the following instruction select you score from one to five, zero being on the left and five being on the right</string>
+    <string name="question_instructions">For each of the following questions rate yourself from one to five, one being on the left and five being on the right</string>
     <string name="question_1">Little interest or pleasure in doing things</string>
     <string name="question_2">Feeling down, depressed, or hopeless</string>
     <string name="question_3">Trouble falling or staying asleep, or sleeping too much</string>

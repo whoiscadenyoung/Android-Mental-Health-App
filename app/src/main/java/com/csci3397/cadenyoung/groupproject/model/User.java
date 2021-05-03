@@ -3,15 +3,15 @@ package com.csci3397.cadenyoung.groupproject.model;
 
 public class User {
     private String email;
-    private String firstName;
-    private String lastName;
-    private String password;
+    private String name;
+    private String dbID;
+    private String lastDayTaken;
 
-    public User(String email, String firstName, String lastName, String password) {
+    public User(String name, String email, String dbID, String lastDayTaken) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
+        this.name = name;
+        this.dbID = dbID;
+        this.lastDayTaken = lastDayTaken;
     }
 
     public String getEmail() {
@@ -23,28 +23,24 @@ public class User {
     }
 
     public String getFirstName() {
-        return firstName;
+        return name;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.name = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getDbID() {
+        return dbID;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setDbID(String dbID) {
+        this.dbID = dbID;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getLastDayTaken() { return lastDayTaken; }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setLastDayTaken(String lastDayTaken) { this.lastDayTaken = lastDayTaken;}
 
 
 

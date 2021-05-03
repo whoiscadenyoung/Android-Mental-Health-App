@@ -55,11 +55,11 @@ public class Quiz {
     {
         if (currentQuestion <= -1 )
         {
-            currentQuestion -= 1;
+            currentQuestion = -1;
         }
         else
         {
-            currentQuestion = -1;
+            currentQuestion -= 1;
         }
         return quizQuestions.get(currentQuestion);
 
@@ -74,7 +74,10 @@ public class Quiz {
     {
         return currentQuestion == quizQuestions.size() -1;
     }
-
+    public boolean isSecondToLast()
+    {
+        return currentQuestion == quizQuestions.size() -2;
+    }
     public int getNextAnswer()
     {
         if (currentQuestion < quizQuestions.size() -1 )
@@ -85,6 +88,10 @@ public class Quiz {
         {
             return 0;
         }
+    }
+    public int getQuestionNum()
+    {
+        return currentQuestion;
     }
 
     @Override

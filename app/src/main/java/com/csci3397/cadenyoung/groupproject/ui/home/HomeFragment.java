@@ -23,6 +23,15 @@ import com.csci3397.cadenyoung.groupproject.model.Stat;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.ui.statistics.StatisticsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class HomeFragment extends Fragment {
@@ -30,8 +39,12 @@ public class HomeFragment extends Fragment {
     private Button goToQuizBtn;
     private HomeViewModel homeViewModel;
     private Button logOutButton;
-    FirebaseAuth firebaseAuth;
+    private boolean HasTakenQuizToday;
+    private String lastDayTaken;
 
+    FirebaseAuth firebaseAuth;
+    FirebaseDatabase db;
+    DatabaseReference myRef;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +81,30 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar calendar = Calendar.getInstance();
+        String today = df.format(calendar.getTime());
+        homeViewModel.setDate(today);
+
+
+        String userID = firebaseAuth.getUid();
+        db = FirebaseDatabase.getInstance();
+        myRef = db.getReference("users");
+        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                lastDayTaken = snapshot.child("lastDayTaken").getValue().toString();
+                Toast.makeText(getContext(), lastDayTaken, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Database read from user", "unsuccessul");
+            }
+        });
+
+        if(lastDayTaken.equals(today)) goToQuizBtn.setVisibility(goToQuizBtn.GONE);
 
         return root;
     }
