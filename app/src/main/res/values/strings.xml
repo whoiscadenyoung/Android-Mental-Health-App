@@ -8,6 +8,7 @@
 
     <string name="maps_api_key">AIzaSyBi50vULcwsdebpsILZxQ9lyX6L6Oxc3kA</string>
 
+    <string name="question_instructions">For each of the following instruction select you score from one to five, zero being on the left and five being on the right</string>
     <string name="question_1">Little interest or pleasure in doing things</string>
     <string name="question_2">Feeling down, depressed, or hopeless</string>
     <string name="question_3">Trouble falling or staying asleep, or sleeping too much</string>
@@ -19,7 +20,9 @@
     <string name="question_9">Thoughts that you would be better off dead, or of hurting yourself</string>
     <string name="question_10">How close are you to getting the recommended daily water intake? (The recommended water intake for a man is 15 cups, 11 for a woman)</string>
     <string name="question_11">How would you rate your activity for today</string>
-    <string name="question_12">How close do you think you are to the recommended hours of sleep (Recommended hours of sleep ( for ages 13-18) 8-10 hours, ( for ages 18++) 7++ hours)</string>
+    <string name="question_12">How close do you think you are to the recommended hours of sleep (Recommended hours of sleep ( for ages 13–18) 8–10 hours, ( for ages 18++) 7++ hours)</string>
+    <string name="question_13">How would you rate your eating consistency? </string>
+    <string name="question_14">How many servings of fruits/veggies have you had today? </string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
