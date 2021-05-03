@@ -3,11 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".com.csci3397.cadenyoung.groupproject.MainActivity"
+    tools:context=".MainActivity"
  >
-<!--    tools:context=".com.csci3397.cadenyoung.groupproject.MainActivity"-->
-
-
     <include
         layout="@layout/content_main"
         android:layout_height="match_parent"

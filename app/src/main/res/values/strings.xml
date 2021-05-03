@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Group Project</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Habit Tracker</string>
     <string name="title_home">Home</string>
     <string name="title_stats">Stats</string>
     <string name="title_map">Map</string>
     <string name="title_quiz">Quiz</string>
 
-    <string name="maps_api_key">AIzaSyA4KKSTCzFaIbNllHJz_YNNhv9xGF09vPQ</string>
+    <string name="maps_api_key">AIzaSyBi50vULcwsdebpsILZxQ9lyX6L6Oxc3kA</string>
 
     <string name="question_1">Little interest or pleasure in doing things</string>
     <string name="question_2">Feeling down, depressed, or hopeless</string>
