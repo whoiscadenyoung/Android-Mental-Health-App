@@ -162,7 +162,7 @@ public class LocationFragment extends Fragment {
                     markerOptions.title(loc.latitude + ":" + loc.longitude);
                     //Set user avatar
                     //TODO
-                   // markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.userAvatar)));
+                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.robot));
                     //Remove all markers
                     googleMap.clear();
                     //Animate to zoom on the marker

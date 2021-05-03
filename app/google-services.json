@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "766404629826",
+    "firebase_url": "https://android-group-pr-1619298389227-default-rtdb.firebaseio.com",
     "project_id": "android-group-pr-1619298389227",
     "storage_bucket": "android-group-pr-1619298389227.appspot.com"
   },
@@ -28,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCbFSogdSbrAu9dMXO2GeU0oUcC-PnYUWg"
+          "current_key": "AIzaSyBi50vULcwsdebpsILZxQ9lyX6L6Oxc3kA"
         }
       ],
       "services": {
