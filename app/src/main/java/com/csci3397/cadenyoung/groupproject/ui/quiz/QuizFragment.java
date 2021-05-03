@@ -125,7 +125,7 @@ public class QuizFragment extends Fragment {
             seekBarAnswer.setProgress(nextAnswer);
         }
     }
-
+//stuff changed
     private void navigateToHome() {
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(
