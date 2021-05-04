@@ -9,12 +9,11 @@
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
 
-    <color name="stat_emotional">#6200EE</color>
-    <color name="stat_eating">#11C13A</color>
-    <color name="stat_stress">#EE001B</color>
-    <color name="stat_screen">#EEA500</color>
-    <color name="stat_water">#4CC6FC</color>
-    <color name="stat_fitness">#E9436B</color>
-
-
+    <color name="stat_mental">#e15644</color>
+    <color name="stat_eating">#8d589e</color>
+    <color name="stat_stress">#eb8931</color>
+    <color name="stat_screen">#333333</color>
+    <color name="stat_water">#498eb5</color>
+    <color name="stat_fitness">#a3ce27</color>
+    <color name="stat_sleep">#bfd3cb</color>
 </resources>
