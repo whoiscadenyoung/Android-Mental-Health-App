@@ -103,9 +103,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         // Load in the resources from the view
         Resources resources = viewHolder.getRes();
 
+        // Set the progress bar status and color
+        viewHolder.getStatBar().setProgress(stat.getProgress());
+        int colorId = stat.getColorId();
+        int color = resources.getColor(colorId);
+        viewHolder.getStatBar().setProgressTintList(ColorStateList.valueOf(color));
+
         // Load in the name and set it in the view
         String statName = stat.getName();
-        viewHolder.getStatName().setText(statName);
+        viewHolder.getStatName().setText(statName.toUpperCase());
+        viewHolder.getStatName().setTextColor(color);
 
         // Load in the image and set it in the view
         int imageId = stat.getImageId();
@@ -116,12 +123,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         int descId = stat.getDescId();
         String statDesc = resources.getString(descId);
         viewHolder.getStatDesc().setText(statDesc);
-
-        // Set the progress bar status and color
-        viewHolder.getStatBar().setProgress(stat.getProgress());
-        int colorId = stat.getColorId();
-        int color = resources.getColor(colorId);
-        viewHolder.getStatBar().setProgressTintList(ColorStateList.valueOf(color));
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
 

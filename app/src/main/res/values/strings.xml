@@ -29,11 +29,12 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
 
-    <string name="emotion_desc">Indicator of how you are feeling emotionally—overwhelmed, burdened, hopeless, etc</string>
+    <string name="mental_desc">Indicator of how you are feeling emotionally—overwhelmed, burdened, hopeless, etc</string>
     <string name="eating_desc">Indicator of your eating habits—over or under-eating, eating irregularly, or lacking nutrition</string>
     <string name="stress_desc">Indicator of stress based on answers to questions about life commitments like school and work</string>
     <string name="screen_desc">Measurement of how beneficial your screen time is for your mental and physical health</string>
-    <string name="water_desc">Measures your water consumption in line with the average for age, size, gender, etc</string>
-    <string name="fitness_desc">Indicates if you are getting a healthy amount of physical activity on a daily basis</string>
+    <string name="water_desc">How is your daily water consumption?</string>
+    <string name="fitness_desc">Are you getting a healthy level of physical activity?</string>
+    <string name="sleep_desc">Are you getting an adequate amount of sleep every night?</string>
 
 </resources>
