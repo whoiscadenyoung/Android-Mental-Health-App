@@ -20,13 +20,21 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.database.LocationHelperClass;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
+import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static android.content.ContentValues.TAG;
 
 public class QuizFragment extends Fragment {
 
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase db;
+    private DatabaseReference myRef;
     private QuizViewModel quizViewModel;
     private Button back;
     private Button next;
@@ -34,11 +42,12 @@ public class QuizFragment extends Fragment {
     private Question currentQuestion;
     private View view;
     private SeekBar seekBarAnswer;
+    private HomeViewModel homeViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -73,20 +82,27 @@ public class QuizFragment extends Fragment {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!quiz.isFinalQuestion())
                 {
+                    if (!quiz.isInstructionsQuestion())
+                    {
+                        currentQuestion.setAnswer(seekBarAnswer.getProgress());
+                        Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
                     currentQuestion = quiz.nextQuestion();
-                    int tempAnswer = seekBarAnswer.getProgress();
-                    currentQuestion.setAnswer(tempAnswer);
-                    //Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
                     setProgressBar();
+                    if (quiz.isFinalQuestion())
+                    {
+                        next.setText("Submit");
+                    }
                 }
 
                 else
                 {
-
-                    next.setText("Submit");
+                    setLastDayTaken();
                     navigateToHome();
                     Log.d("Quiz Submitted", quiz.toString());
                     //TODO have the submit button take you back to the home page
@@ -102,6 +118,7 @@ public class QuizFragment extends Fragment {
                     currentQuestion = quiz.previousQuestion();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
                     setProgressBar();
+                    next.setText("Next");
                 }
                 else
                 {
@@ -113,16 +130,24 @@ public class QuizFragment extends Fragment {
         });
     }
 
+    private void setLastDayTaken() {
+        db = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        myRef = db.getReference("users");// path to the date stuff
+        String userID = firebaseAuth.getUid();
+        myRef.child(userID).child("lastDayTaken").setValue(homeViewModel.getDate());
+    }
+
     private void setProgressBar()
     {
-        int nextAnswer = quiz.getNextAnswer();
-        if (nextAnswer == -1)
+        int answer = currentQuestion.getAnswer();
+        if (answer == -1)
         {
             seekBarAnswer.setProgress(0);
         }
         else
         {
-            seekBarAnswer.setProgress(nextAnswer);
+            seekBarAnswer.setProgress(answer);
         }
     }
 //stuff changed

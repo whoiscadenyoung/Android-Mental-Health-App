@@ -10,21 +10,23 @@ public class Stats {
     public Stats() {
         stats = new Hashtable<String, Stat>();
 
-        this.addStat(R.drawable.stress, "emotion", R.string.emotion_desc, R.color.stat_emotional);
+        this.addStat(R.drawable.mental, "mental", R.string.mental_desc, R.color.stat_mental);
         this.addStat(R.drawable.stress, "stress", R.string.stress_desc, R.color.stat_stress);
         this.addStat(R.drawable.screen, "screen", R.string.screen_desc, R.color.stat_screen);
         this.addStat(R.drawable.eating, "eating", R.string.eating_desc, R.color.stat_eating);
         this.addStat(R.drawable.water, "water", R.string.water_desc, R.color.stat_water);
         this.addStat(R.drawable.fitness, "fitness", R.string.fitness_desc, R.color.stat_fitness);
+        this.addStat(R.drawable.sleep, "sleep", R.string.sleep_desc, R.color.stat_sleep);
     }
 
     private void addStat(int imageId, String name, int descId, int colorId) {
-        if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, descId, colorId));
+        if (!stats.containsKey(name)) stats.put(name, new Stat(imageId, name, descId, colorId, 50));
     }
 
     public void updateStat(String statName, int quizAnswer) {
         if (stats.containsKey(statName)) {
             Stat stat = stats.get(statName);
+            assert stat != null;
             int statProgress = stat.getProgress();
             double change;
             switch (quizAnswer) {
@@ -35,7 +37,7 @@ public class Stats {
                     change = -0.1;
                     break;
                 case 3:
-                    change = 0;
+                    change = 0.02;
                     break;
                 case 4:
                     change = 0.1;

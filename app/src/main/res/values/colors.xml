@@ -8,4 +8,12 @@
     <color name="secondaryDarkColor">#c295a6</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
+
+    <color name="stat_mental">#e15644</color>
+    <color name="stat_eating">#8d589e</color>
+    <color name="stat_stress">#eb8931</color>
+    <color name="stat_screen">#333333</color>
+    <color name="stat_water">#498eb5</color>
+    <color name="stat_fitness">#a3ce27</color>
+    <color name="stat_sleep">#bfd3cb</color>
 </resources>

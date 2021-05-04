@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
     private Button logOutButton;
     private boolean HasTakenQuizToday;
     private String lastDayTaken;
-    View root;
+    priavte View root;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase db;
     DatabaseReference myRef;
@@ -89,7 +89,6 @@ public class HomeFragment extends Fragment {
         String today = df.format(calendar.getTime());
         homeViewModel.setDate(today);
 
-
         String userID = firebaseAuth.getUid();
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
@@ -104,6 +103,7 @@ public class HomeFragment extends Fragment {
                 lastDayTaken = user.getLastDayTaken();
                 //lastDayTaken = snapshot.child("lastDayTaken").getValue().toString();
                 Log.d("lastDayTaken is equal to" ,lastDayTaken);
+
                 Toast.makeText(getContext(), lastDayTaken, Toast.LENGTH_SHORT).show();
             }
 
@@ -112,9 +112,9 @@ public class HomeFragment extends Fragment {
                 Log.d("Database read from user", "unsuccessul");
             }
         });
+      
 //TODO FIX THIS
 //        if(lastDayTaken.equals(today)) goToQuizBtn.setVisibility(getView().GONE);
-
         return root;
     }
 
@@ -129,7 +129,6 @@ public class HomeFragment extends Fragment {
                         .build()
         );
     }
-
 
 //    private NavController getNavController() {
 //        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.f);
