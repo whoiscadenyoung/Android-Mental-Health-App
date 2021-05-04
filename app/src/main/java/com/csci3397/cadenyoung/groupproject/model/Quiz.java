@@ -1,61 +1,108 @@
 package com.csci3397.cadenyoung.groupproject.model;
 
 import com.csci3397.cadenyoung.groupproject.R;
-
+import java.util.ArrayList;
 public class Quiz {
 
-    private Question[] quizQuestions;
+    private ArrayList<Question> quizQuestions;
+
     private int currentQuestion;
 
     public Quiz()
     {
-        quizQuestions = new Question[12];
-        quizQuestions[0] = new Question(R.string.question_1);
-        quizQuestions[1] = new Question(R.string.question_2);
-        quizQuestions[2] = new Question(R.string.question_3);
-        quizQuestions[3] = new Question(R.string.question_4);
-        quizQuestions[4] = new Question(R.string.question_5);
-        quizQuestions[5] = new Question(R.string.question_6);
-        quizQuestions[6] = new Question(R.string.question_7);
-        quizQuestions[7] = new Question(R.string.question_8);
-        quizQuestions[8] = new Question(R.string.question_9);
-        quizQuestions[9] = new Question(R.string.question_10);
-        quizQuestions[10] = new Question(R.string.question_11);
-        quizQuestions[11] = new Question(R.string.question_12);
+        quizQuestions = new ArrayList<Question> ();
+        quizQuestions.add(new Question(R.string.question_1, "emotion"));
+        quizQuestions.add(new Question(R.string.question_2, "emotion"));
+        quizQuestions.add(new Question(R.string.question_3, "emotion"));
+        quizQuestions.add(new Question(R.string.question_4, "emotion"));
+        quizQuestions.add(new Question(R.string.question_5, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_6, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_7, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_8, "emotion"));
+//        quizQuestions.add(new Question(R.string.question_9,"emotion"));
+//        quizQuestions.add(new Question(R.string.question_10, "water"));
+//        quizQuestions.add(new Question(R.string.question_11, "fitness"));
+//        quizQuestions.add(new Question(R.string.question_12, "sleep"));
+//        quizQuestions.add(new Question(R.string.question_13, "eating"));
+//        quizQuestions.add(new Question(R.string.question_14, "eating"));
         currentQuestion = -1;
 
     }
 
     public Question getPage(int i) {
-        if(i >= quizQuestions.length)
+        if(i >= quizQuestions.size())
         {
             i =0;
         }
-        return quizQuestions[i];
+        return quizQuestions.get(i);
     }
+
     public Question nextQuestion()
     {
-        currentQuestion += 1;
-        return quizQuestions[currentQuestion];
+        if (currentQuestion < quizQuestions.size())
+        {
+            currentQuestion += 1;
+        }
+        else
+        {
+            currentQuestion = -1;
+        }
+        return quizQuestions.get(currentQuestion);
 
     }
 
     public Question previousQuestion()
     {
-        currentQuestion -= 1;
-        return quizQuestions[currentQuestion];
-
-    }
-    public boolean isFinalQuestion()
-    {
-        if (currentQuestion == quizQuestions.length-1)
+        if (currentQuestion <= -1 )
         {
-            return true;
+            currentQuestion = -1;
         }
         else
         {
-            return false;
+            currentQuestion -= 1;
         }
+        return quizQuestions.get(currentQuestion);
+
+
+    }
+    public boolean isInstructionsQuestion()
+    {
+        return currentQuestion == -1;
+    }
+
+    public boolean isFinalQuestion()
+    {
+        return currentQuestion == quizQuestions.size() -1;
+    }
+    public boolean isSecondToLast()
+    {
+        return currentQuestion == quizQuestions.size() -2;
+    }
+    public int getNextAnswer()
+    {
+        if (currentQuestion < quizQuestions.size() -1 )
+        {
+            return quizQuestions.get(currentQuestion + 1).getAnswer();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public int getQuestionNum()
+    {
+        return currentQuestion;
+    }
+
+    @Override
+    public String toString()
+    {
+        String temp = "";
+        for (int i =0; i < quizQuestions.size(); i++)
+        {
+            temp += quizQuestions.get(i);
+        }
+        return temp;
     }
 
 }

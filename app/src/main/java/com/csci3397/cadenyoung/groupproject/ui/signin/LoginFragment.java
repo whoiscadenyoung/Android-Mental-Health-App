@@ -1,4 +1,4 @@
-package com.csci3397.cadenyoung.groupproject.ui;
+package com.csci3397.cadenyoung.groupproject.ui.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
+import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,8 +33,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import static android.content.ContentValues.TAG;
 
@@ -49,6 +55,8 @@ public class LoginFragment extends Fragment {
     String password;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
+    FirebaseDatabase db;
+    DatabaseReference myRef;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -94,7 +102,10 @@ public class LoginFragment extends Fragment {
                 .build();
 
         //Initialize sign in client
-        googleSignInClient = GoogleSignIn.getClient(getActivity(), googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions);
+
+        //Initialize firebase auth
+        firebaseAuth = FirebaseAuth.getInstance();
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,31 +116,27 @@ public class LoginFragment extends Fragment {
                 startActivityForResult(intent, 100);
             }
         });
+        return view;
+    }
 
-        //Initialize firebase auth
-        firebaseAuth = FirebaseAuth.getInstance();
+    @Override
+    public void onStart() {
+        super.onStart();
         //Initialize firebase user
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         //Check condition
         if (firebaseUser != null) {
             //When user is already signed in
             //Redirect to homepage
+            Log.d("User: ", firebaseAuth.getUid());
             moveToHomepage();
         }
-        return view;
     }
-
-    /*@Override
-    public void onStart() {
-        super.onStart();
-        //Check if user is signed in (non-null) and update UI accordingly
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if(currentUser != null) moveToHomepage();
-    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("request Code", String.valueOf(requestCode));
         //Check condition
         if(requestCode == 100) {
             //When request code is equal to 100
@@ -156,18 +163,20 @@ public class LoginFragment extends Fragment {
                                         null);
                         //Check credential
                         firebaseAuth.signInWithCredential(authCredential)
-                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         //Check condition
                                         if(task.isSuccessful()) {
                                             //When task is successful
                                             //Redirect to homepage
-                                            getUser();
+                                            if(task.getResult().getAdditionalUserInfo().isNewUser()){
+                                                addUserToDB(firebaseAuth.getCurrentUser());
+                                            }
                                             moveToHomepage();
                                             Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(getActivity(), "sign in UNsuccessful" , Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "sign in Unsuccessful" , Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -175,11 +184,24 @@ public class LoginFragment extends Fragment {
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }
+            } else{
+                Log.d("Sign In", "Was unsuccessful");
+                Log.d("Sign In", signInAccountTask.getException().toString());
             }
         }
     }
 
-    private void getUser() {
+    private void addUserToDB(FirebaseUser user) {
+        db = FirebaseDatabase.getInstance();
+        myRef = db.getReference("users");
+        if(user.getUid() == null) Log.d("userID", "null");
+        String name = user.getDisplayName();
+        String email = user.getEmail();
+        String userID = user.getUid();
+
+        User currentUser = new User(name, email, userID, "never");
+        myRef.child(userID).setValue(currentUser);
+        Log.d("registered", "into database");
     }
 
 
@@ -197,20 +219,18 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            getUser();
                             moveToHomepage();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed. Incorrect email or password.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                            //checkForMultiFactorFailure(task.getException());
-                        }
+                            if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                passwordText.setError("The password is invalid or the user does not have a password");
+                            }
+                            if(task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                emailText.setError("Email is not registered");
+                            }
 
-                        /*if (!task.isSuccessful()) {
-                            mBinding.status.setText(R.string.auth_failed);
-                        }*/
+                        }
                     }
                 });
     }
@@ -218,7 +238,6 @@ public class LoginFragment extends Fragment {
 
     private void moveToHomepage() {
         Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);
-        //intent.putExtra("name",name);
         startActivity(intent);
     }
 
@@ -248,7 +267,6 @@ public class LoginFragment extends Fragment {
         } else {
             passwordText.setError(null);
         }
-
         return valid;
     }
 }
