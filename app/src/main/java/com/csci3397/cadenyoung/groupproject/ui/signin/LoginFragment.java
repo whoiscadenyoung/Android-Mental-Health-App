@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
+import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -198,7 +199,7 @@ public class LoginFragment extends Fragment {
         String email = user.getEmail();
         String userID = user.getUid();
 
-        UserHelperClass currentUser = new UserHelperClass(name, email, userID);
+        User currentUser = new User(name, email, userID, "never");
         myRef.child(userID).setValue(currentUser);
         Log.d("registered", "into database");
     }

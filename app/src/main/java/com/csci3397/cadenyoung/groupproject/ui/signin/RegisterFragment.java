@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
+import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -157,7 +158,7 @@ public class RegisterFragment extends Fragment {
     private void addToDB() {
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
-        UserHelperClass user = new UserHelperClass(firstName + " " + lastName, email, firebaseAuth.getUid());
+        User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never");
         myRef.child(firebaseAuth.getUid()).setValue(user);
         Log.d("registered", "into database");
     }
