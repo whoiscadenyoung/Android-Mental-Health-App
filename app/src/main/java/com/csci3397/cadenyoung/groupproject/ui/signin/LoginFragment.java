@@ -51,8 +51,7 @@ public class LoginFragment extends Fragment {
     EditText passwordText;
     GoogleSignInClient googleSignInClient;
     FirebaseAuth firebaseAuth;
-    String email;
-    String password;
+    String email;String password;
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
     FirebaseDatabase db;

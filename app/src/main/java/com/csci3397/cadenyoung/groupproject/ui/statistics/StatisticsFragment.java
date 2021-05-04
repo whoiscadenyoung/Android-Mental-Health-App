@@ -9,12 +9,14 @@ import android.widget.TableLayout;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.CustomAdapter;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
+import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
 
 public class StatisticsFragment extends Fragment {
 
@@ -28,7 +30,7 @@ public class StatisticsFragment extends Fragment {
     private TableLayout tableLayout;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        statisticsViewModel = new ViewModelProvider(this).get(StatisticsViewModel.class);
+        statisticsViewModel = ViewModelProviders.of(requireActivity()).get(StatisticsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         stats = new Stats();

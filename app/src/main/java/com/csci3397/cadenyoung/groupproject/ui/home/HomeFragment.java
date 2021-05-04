@@ -2,6 +2,7 @@ package com.csci3397.cadenyoung.groupproject.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
@@ -40,16 +42,16 @@ public class HomeFragment extends Fragment {
     private Button goToQuizBtn;
     private HomeViewModel homeViewModel;
     private Button logOutButton;
-    private boolean HasTakenQuizToday;
+    private boolean setLastDay = false;
     private String lastDayTaken;
-    priavte View root;
+    private View root;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase db;
     DatabaseReference myRef;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -88,6 +90,7 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         String today = df.format(calendar.getTime());
         homeViewModel.setDate(today);
+        Log.d("today1", today);
 
         String userID = firebaseAuth.getUid();
         db = FirebaseDatabase.getInstance();
@@ -96,15 +99,11 @@ public class HomeFragment extends Fragment {
         myRef.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Post post = dataSnapshot.getValue(Post.class);
-//                System.out.println(post);
-
-                User user = snapshot.child(userID).getValue(User.class);
+                User user = snapshot.getValue(User.class);
                 lastDayTaken = user.getLastDayTaken();
-                //lastDayTaken = snapshot.child("lastDayTaken").getValue().toString();
-                Log.d("lastDayTaken is equal to" ,lastDayTaken);
-
+                Log.d("inside onDataChange lastDayTaken is equal to" ,lastDayTaken);
                 Toast.makeText(getContext(), lastDayTaken, Toast.LENGTH_SHORT).show();
+                setLastDay = true;
             }
 
             @Override
@@ -112,10 +111,29 @@ public class HomeFragment extends Fragment {
                 Log.d("Database read from user", "unsuccessul");
             }
         });
-      
-//TODO FIX THIS
-//        if(lastDayTaken.equals(today)) goToQuizBtn.setVisibility(getView().GONE);
+
+        Log.d("today2", today);
+        Log.d("fake today", homeViewModel.getDate());
+        //Log.d("lastDayTaken2 is equal to", lastDayTaken);
+        setButtonVisibility();
+
         return root;
+    }
+
+
+
+    private void setButtonVisibility() {
+        if(!setLastDay) {
+            new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                   setButtonVisibility();
+                }
+            }, 50);
+        } else {
+            if (lastDayTaken.equals(homeViewModel.getDate()))
+                goToQuizBtn.setVisibility(root.GONE);
+        }
     }
 
     private void navigateToQuiz() {

@@ -7,12 +7,21 @@ public class User {
     private String dbID;
     private String lastDayTaken;
 
+    private User() {}
+
     public User(String name, String email, String dbID, String lastDayTaken) {
         this.email = email;
         this.name = name;
         this.dbID = dbID;
         this.lastDayTaken = lastDayTaken;
     }
+
+//    public User(User user) {
+//        this.email = user.email;
+//        this.name = user.name;
+//        this.dbID = user.dbID;
+//        this.lastDayTaken = user.lastDayTaken;
+//    }
 
     public String getEmail() {
         return email;
