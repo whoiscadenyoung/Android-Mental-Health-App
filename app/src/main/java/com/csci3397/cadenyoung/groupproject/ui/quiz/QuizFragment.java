@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +20,12 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.R;
-import com.csci3397.cadenyoung.groupproject.database.LocationHelperClass;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
 import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import static android.content.ContentValues.TAG;
 
 public class QuizFragment extends Fragment {
 

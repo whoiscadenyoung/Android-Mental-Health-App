@@ -57,13 +57,13 @@ public class Stats {
         }
     }
 
-    public void updateFromQuiz(Quiz quiz) {
-        ArrayList<Question> questions = quiz.getQuestions();
-        for (question : questions) {
-            updateStat(question.questionType)
-        }
-
-    }
+//    public void updateFromQuiz(Quiz quiz) {
+//        ArrayList<Question> questions = quiz.getQuestions();
+//        for (question : questions) {
+//            updateStat(question.questionType)
+//        }
+//
+//    }
 
     public Stat[] getStats() {return stats.values().toArray(new Stat[0]);}
 }

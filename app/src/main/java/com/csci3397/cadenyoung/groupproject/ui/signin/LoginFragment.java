@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
-import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
 import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
