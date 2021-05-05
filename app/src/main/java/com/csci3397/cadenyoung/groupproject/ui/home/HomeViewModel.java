@@ -12,10 +12,10 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
     private String date;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase db;
-    private DatabaseReference myRef;
-    //TODO add the database reference to be accessed by other fragments
+
+//    //Possibly add the firebase ref to the HomeViewModel
+//    private FirebaseAuth firebaseAuth;
+//    private FirebaseDatabase db;
 
     public HomeViewModel() {
         mText = new MutableLiveData<>();
