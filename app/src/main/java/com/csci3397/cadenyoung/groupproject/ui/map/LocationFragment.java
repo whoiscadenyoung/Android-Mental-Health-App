@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,11 +67,11 @@ public class LocationFragment extends Fragment {
 
         if (isNetworkAvailable()) {
             //Initialize location client
-            client =  client = LocationServices.getFusedLocationProviderClient(getActivity());
-            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+            client = client = LocationServices.getFusedLocationProviderClient(getActivity());
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED){
+                            == PackageManager.PERMISSION_GRANTED) {
                 //Has permission
                 //Call method
                 getCurrentLocation();
@@ -91,7 +92,7 @@ public class LocationFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //Check condition
-        if(requestCode == 100 && (grantResults.length > 0) && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED)){
+        if (requestCode == 100 && (grantResults.length > 0) && (grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
             //Has permission
             //Call method
             getCurrentLocation();
@@ -107,7 +108,7 @@ public class LocationFragment extends Fragment {
         //Initialize location manager
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         //Check condition
-        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             //When location service is enabled
             //Get last location
             client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -121,7 +122,7 @@ public class LocationFragment extends Fragment {
                         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                         setNewLocation(loc);
 
-                    }else {
+                    } else {
                         //When location is null
                         //Initialize location request
                         LocationRequest locationRequest = new LocationRequest().create()
@@ -131,7 +132,7 @@ public class LocationFragment extends Fragment {
                                 .setNumUpdates(1);
 
                         //Initialize location call back
-                        LocationCallback locationCallback = new LocationCallback(){
+                        LocationCallback locationCallback = new LocationCallback() {
                             @Override
                             public void onLocationResult(LocationResult locationResult) {
                                 //Initialize location
@@ -228,17 +229,61 @@ public class LocationFragment extends Fragment {
                 connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
         boolean isAvailable = false;
 
-        if(networkCapabilities != null) {
+        if (networkCapabilities != null) {
             if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                 isAvailable = true;
             } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 isAvailable = true;
             }
         } else {
-            Toast.makeText(getActivity(),"Sorry, network is not available",
+            Toast.makeText(getActivity(), "Sorry, network is not available",
                     Toast.LENGTH_LONG).show();
         }
 
         return isAvailable;
     }
+
+    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            String userID = firebaseAuth.getUid();
+            db = FirebaseDatabase.getInstance();
+            myRef = db.getReference("locations");
+
+            myRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    String uID = snapshot.getKey();
+                    if (!uID.equals(userID)) {
+                        LocationHelperClass childLocation = snapshot.getValue(LocationHelperClass.class);
+                        LatLng loc = childLocation.getLastLocation();
+                        googleMap.addMarker(new MarkerOptions().position(loc));
+
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChild) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+
+            });
+        }
+    };
 }
