@@ -72,7 +72,10 @@ public class Stats {
     public UserStats updateFromQuiz(Quiz quiz) {
         ArrayList<Question> questions = quiz.getQuestions();
         for (Question question : questions) {
-            updateStat(question.getQuestionType(), question.getAnswer());
+            String questionType = question.getQuestionType();
+            if (stats.containsKey(questionType)) {
+                updateStat(questionType, question.getAnswer());
+            }
         }
         UserStats userStats = new UserStats(stats.get("mental").getProgress(), stats.get("stress").getProgress(),
                 stats.get("screen").getProgress(), stats.get("eating").getProgress(), stats.get("water").getProgress(),
