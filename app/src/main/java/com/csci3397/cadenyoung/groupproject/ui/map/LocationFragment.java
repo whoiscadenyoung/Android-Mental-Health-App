@@ -192,6 +192,61 @@ public class LocationFragment extends Fragment {
                         }
                     });
 
+
+
+//                    private fun loadMarkersFromDB(){
+//                        val query = database.getReference("spots/").orderByChild("place/latLng")
+//                        query.addListenerForSingleValueEvent(object: ValueEventListener{
+//                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                                if(dataSnapshot.exists()){
+//                                    var lat: Double
+//                                    var lng: Double
+//                                    var position: LatLng
+//                                    for(spotLatLng:DataSnapshot in dataSnapshot.children){
+//                                        lat = spotLatLng.child("place/latLng/latitude/").value.toString().toDouble()
+//                                        lng = spotLatLng.child("place/latLng/longitude/").value.toString().toDouble()
+//                                        position = LatLng(lat, lng)
+//                                        Log.d(TAG, "Lat: ${position.latitude} Lng: ${position.longitude}")
+//                                    }
+//                                }
+//                            }
+//                            override fun onCancelled(p0: DatabaseError) {
+//                            }
+//                        } )
+//                    }
+
+                    myRef = db.getReference("locations");
+
+                    myRef.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            String uID = snapshot.getKey();
+                            if (!uID.equals(userID)) {
+                                //User user = snapshot.getValue(User.class);
+                                Location childLocation = snapshot.getValue(Location.class);
+                                Log.d("CHILD LOCATION IS NOT NULL", uID);
+                                Double cLat = childLocation.getLatitude();
+                                Double cLng = childLocation.getLongitude();
+                                Log.d("LAT THING", String.valueOf(cLat));
+                                googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)));
+
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChild) { }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) { }
+
+                    });
+
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.robot));
                     //Remove all markers
                     googleMap.clear();
@@ -215,7 +270,7 @@ public class LocationFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         myRef = db.getReference("locations");
         String userID = firebaseAuth.getUid();
-        Location lastLoc = new Location(loc);
+        Location lastLoc = new Location(loc.latitude, loc.longitude);
         myRef.child(userID).setValue(lastLoc);
 
     }
@@ -241,47 +296,47 @@ public class LocationFragment extends Fragment {
         return isAvailable;
     }
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
-
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            String userID = firebaseAuth.getUid();
-            db = FirebaseDatabase.getInstance();
-            myRef = db.getReference("locations");
-
-            myRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    String uID = snapshot.getKey();
-                    if (!uID.equals(userID)) {
-                        Location childLocation = snapshot.getValue(Location.class);
-                        LatLng loc = childLocation.getLastLocation();
-                        googleMap.addMarker(new MarkerOptions().position(loc));
-
-                    }
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChild) {
-
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-
-            });
-        }
-    };
+//    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+//
+//        @Override
+//        public void onMapReady(GoogleMap googleMap) {
+//            String userID = firebaseAuth.getUid();
+//            db = FirebaseDatabase.getInstance();
+//            myRef = db.getReference("locations");
+//
+//            myRef.addChildEventListener(new ChildEventListener() {
+//                @Override
+//                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//                    String uID = snapshot.getKey();
+//                    if (!uID.equals(userID)) {
+//                        Location childLocation = snapshot.getValue(Location.class);
+//                        LatLng loc = childLocation.getLastLocation();
+//                        googleMap.addMarker(new MarkerOptions().position(loc));
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChild) {
+//
+//                }
+//
+//                @Override
+//                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+//
+//                }
+//
+//                @Override
+//                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+//
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//
+//            });
+//        }
+//    };
 }
