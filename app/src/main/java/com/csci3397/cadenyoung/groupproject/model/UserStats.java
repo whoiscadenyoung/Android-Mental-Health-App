@@ -5,6 +5,10 @@ public class UserStats {
     private int stat1progress;
     private int stat2progress;
     private int stat3progress;
+    private int stat4progress;
+    private int stat5progress;
+    private int stat6progress;
+    private int stat7progress;
 
     public String getUserID() {
         return userID;
@@ -70,8 +74,4 @@ public class UserStats {
         this.stat7progress = stat7progress;
     }
 
-    private int stat4progress;
-    private int stat5progress;
-    private int stat6progress;
-    private int stat7progress;
 }

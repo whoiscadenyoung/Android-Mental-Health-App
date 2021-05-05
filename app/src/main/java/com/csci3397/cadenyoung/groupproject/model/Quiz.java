@@ -11,6 +11,7 @@ public class Quiz {
     public Quiz()
     {
         quizQuestions = new ArrayList<Question> ();
+        quizQuestions.add(new Question(R.string.question_instructions, ""));
         quizQuestions.add(new Question(R.string.question_1, "mental"));
         quizQuestions.add(new Question(R.string.question_2, "mental"));
         quizQuestions.add(new Question(R.string.question_3, "mental"));
@@ -25,7 +26,7 @@ public class Quiz {
         quizQuestions.add(new Question(R.string.question_12, "sleep"));
         quizQuestions.add(new Question(R.string.question_13, "eating"));
         quizQuestions.add(new Question(R.string.question_14, "eating"));
-        currentQuestion = -1;
+        currentQuestion = 0;
 
     }
 
@@ -45,7 +46,7 @@ public class Quiz {
         }
         else
         {
-            currentQuestion = -1;
+            currentQuestion = 0;
         }
         return quizQuestions.get(currentQuestion);
 
@@ -54,11 +55,12 @@ public class Quiz {
     {
         return quizQuestions;
     }
+
     public Question previousQuestion()
     {
         if (currentQuestion <= 0 )
         {
-            currentQuestion = -1;
+            currentQuestion = 0;
         }
         else
         {
@@ -70,28 +72,14 @@ public class Quiz {
     }
     public boolean isInstructionsQuestion()
     {
-        return currentQuestion == -1;
+        return currentQuestion == 0;
     }
 
     public boolean isFinalQuestion()
     {
         return currentQuestion == quizQuestions.size() -1;
     }
-    public boolean isSecondToLast()
-    {
-        return currentQuestion == quizQuestions.size() -2;
-    }
-    public int getNextAnswer()
-    {
-        if (currentQuestion < quizQuestions.size() -1 )
-        {
-            return quizQuestions.get(currentQuestion + 1).getAnswer();
-        }
-        else
-        {
-            return 0;
-        }
-    }
+
     public int getQuestionNum()
     {
         return currentQuestion;

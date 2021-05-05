@@ -30,17 +30,4 @@ public class Location {
         this.longitude = longitude;
     }
 
-
-//    public Location(LatLng lastLocation) {
-//        this.lastLocation = lastLocation;
-//    }
-//
-//    public LatLng getLastLocation() {
-//        return lastLocation;
-//    }
-//
-//    public void setLastLocation(LatLng lastLocation) {
-//        this.lastLocation = lastLocation;
-//    }
-
 }

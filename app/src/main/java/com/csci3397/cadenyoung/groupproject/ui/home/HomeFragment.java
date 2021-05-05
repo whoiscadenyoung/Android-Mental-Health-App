@@ -21,6 +21,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
@@ -49,32 +50,30 @@ public class HomeFragment extends Fragment {
     private boolean setLastDay = false;
     private String lastDayTaken;
     private View root;
-    FirebaseAuth firebaseAuth;
-    FirebaseDatabase db;
-    DatabaseReference myRef;
+    private AlertDialogFragment dialog;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseDatabase db;
+    private DatabaseReference myRef;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
         firebaseAuth = FirebaseAuth.getInstance();
-
+        dialog = new AlertDialogFragment();
 
         goToQuizBtn = root.findViewById(R.id.goToQuizBtn);
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToQuiz();
+                if(isNetworkAvailable()) {
+                    navigateToQuiz();
+                } else {
+                    alertUserError();
+                }
             }
         });
-
-//        final TextView textView = root.findViewById(R.id.text_notifications);
-//        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
 
         logOutButton = root.findViewById(R.id.logOutButton);
         logOutButton.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +82,6 @@ public class HomeFragment extends Fragment {
                 //firebase sign out
                 firebaseAuth.signOut();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
-                //intent.putExtra("name",name);
                 startActivity(intent);
             }
         });
@@ -92,34 +90,28 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         String today = df.format(calendar.getTime());
         homeViewModel.setDate(today);
-        Log.d("today1", today);
 
-        String userID = firebaseAuth.getUid();
-        Log.d("userID", userID);
-        db = FirebaseDatabase.getInstance();
-        myRef = db.getReference("users");
+        if(isNetworkAvailable()) {
+            String userID = firebaseAuth.getUid();
+            db = FirebaseDatabase.getInstance();
+            myRef = db.getReference("users");
 
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                Log.d("user is not null", user.getName());
-                lastDayTaken = user.getLastDayTaken();
-                Log.d("inside onDataChange lastDayTaken is equal to", lastDayTaken);
-                setLastDay = true;
-            }
+            myRef.child(userID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    lastDayTaken = user.getLastDayTaken();
+                    setLastDay = true;
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Database read from user", "unsuccessul");
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("Database read from user", "unsuccessful");
+                }
+            });
+        }
 
-        Log.d("today2", today);
-        Log.d("fake today", homeViewModel.getDate());
-        //Log.d("lastDayTaken2 is equal to", lastDayTaken);
         setButtonVisibility();
-
         return root;
     }
 
@@ -136,6 +128,8 @@ public class HomeFragment extends Fragment {
                 if (lastDayTaken.equals(homeViewModel.getDate()))
                     goToQuizBtn.setVisibility(root.GONE);
             }
+        } else {
+            goToQuizBtn.setVisibility(root.GONE);
         }
     }
 
@@ -149,6 +143,10 @@ public class HomeFragment extends Fragment {
                         .setExitAnim(android.R.animator.fade_out)
                         .build()
         );
+    }
+
+    private void alertUserError() {
+        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
     }
 
     private boolean isNetworkAvailable() {
@@ -172,11 +170,4 @@ public class HomeFragment extends Fragment {
         return isAvailable;
     }
 
-//    private NavController getNavController() {
-//        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.f);
-//        if (!(fragment instanceof NavHostFragment)) {
-//            throw new IllegalStateException("Activity " + this + " does not have a NavHostFragment");
-//        }
-//        return ((NavHostFragment) fragment).getNavController();
-//    }
 }

@@ -30,19 +30,17 @@ import static android.content.ContentValues.TAG;
 
 public class RegisterFragment extends Fragment {
 
-    Button registerButton;
-    EditText newEmailText;
-    EditText newPasswordText;
-    EditText firstNameText;
-    EditText lastNameText;
-    FirebaseAuth firebaseAuth;
-
+    private Button registerButton;
+    private EditText newEmailText;
+    private EditText newPasswordText;
+    private EditText firstNameText;
+    private EditText lastNameText;
+    private FirebaseAuth firebaseAuth;
     private String firstName;
     private String lastName;
     private String email;
-
-    FirebaseDatabase db;
-    DatabaseReference myRef;
+    private FirebaseDatabase db;
+    private DatabaseReference myRef;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -158,38 +156,5 @@ public class RegisterFragment extends Fragment {
         myRef.child(firebaseAuth.getUid()).setValue(user);
         Log.d("registered", "into database");
     }
-//        insertBtn.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            rootNode = FirebaseDatabase.getInstance();
-//            reference = rootNode.getReference("users");
-//            UserHelperClass user = new UserHelperClass(nameText.getText().toString(),
-//                    contactText.getText().toString(), dobText.getText().toString());
-//            reference.child(nameText.getText().toString()).setValue(user);
-//        }
-//    });
-//
-//        viewBtn.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            rootNode = FirebaseDatabase.getInstance();
-//            reference = rootNode.getReference("users");
-//
-//            reference.child(nameText.getText().toString()).addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    String name = snapshot.child("name").getValue().toString();
-//                    String contact = snapshot.child("contact").getValue().toString();
-//                    String dob = snapshot.child("dob").getValue().toString();
-//                    Toast.makeText(getApplicationContext(), name + "\n" +
-//                            contact + "\n" + dob, Toast.LENGTH_SHORT).show();
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        }
-//    });
+
 }
