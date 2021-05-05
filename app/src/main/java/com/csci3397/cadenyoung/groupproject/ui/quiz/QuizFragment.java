@@ -22,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
+import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +39,7 @@ public class QuizFragment extends Fragment {
     private Quiz quiz;
     private Question currentQuestion;
     private View view;
-    private SeekBar seekBarAnswer;
+    private SeekBar progessBarAnswer;
     private HomeViewModel homeViewModel;
 
     @Override
@@ -49,7 +50,7 @@ public class QuizFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        quizViewModel = new ViewModelProvider(this).get(QuizViewModel.class);
+        quizViewModel =  ViewModelProviders.of(requireActivity()).get(QuizViewModel.class);
         view = inflater.inflate(R.layout.fragment_quiz, container, false);
         final TextView textView = view.findViewById(R.id.question_view);
         quizViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
@@ -62,8 +63,8 @@ public class QuizFragment extends Fragment {
         quizViewModel.setText(getString(R.string.question_instructions));
         next = view.findViewById(R.id.next);
         back = view.findViewById(R.id.back);
-        seekBarAnswer = (SeekBar)view.findViewById(R.id.questionAnswer);
-
+        progessBarAnswer = (SeekBar)view.findViewById(R.id.questionAnswer);
+        progessBarAnswer.setVisibility(view.GONE);
         quiz = new Quiz();
         loadButtons();
         return view;
@@ -84,7 +85,9 @@ public class QuizFragment extends Fragment {
                 {
                     if (!quiz.isInstructionsQuestion())
                     {
-                        currentQuestion.setAnswer(seekBarAnswer.getProgress());
+
+                        currentQuestion.setAnswer(progessBarAnswer.getProgress());
+                        progessBarAnswer.setVisibility(view.VISIBLE);
                         //Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     }
                     Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
@@ -100,6 +103,8 @@ public class QuizFragment extends Fragment {
                 else
                 {
                     setLastDayTaken();
+                    quizViewModel.setQuiz(quiz);
+                    setToDB();
                     navigateToHome();
                     Log.d("Quiz Submitted", quiz.toString());
                     //TODO have the submit button take you back to the home page
@@ -129,6 +134,10 @@ public class QuizFragment extends Fragment {
         });
     }
 
+    private void setToDB() {
+        // call stats
+    }
+
     private void setLastDayTaken() {
         db = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -142,11 +151,11 @@ public class QuizFragment extends Fragment {
         int answer = currentQuestion.getAnswer();
         if (answer == -1)
         {
-            seekBarAnswer.setProgress(0);
+            progessBarAnswer.setProgress(0);
         }
         else
         {
-            seekBarAnswer.setProgress(answer);
+            progessBarAnswer.setProgress(answer);
         }
     }
 //stuff changed

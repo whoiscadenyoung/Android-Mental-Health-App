@@ -25,6 +25,7 @@ import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.User;
+import com.csci3397.cadenyoung.groupproject.model.UserStats;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -216,6 +217,8 @@ public class LoginFragment extends Fragment {
 
         User currentUser = new User(name, email, userID, "never", 1);
         myRef.child(userID).setValue(currentUser);
+//TODO add the stats to the database
+//        UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
         Log.d("registered", "into database");
     }
 

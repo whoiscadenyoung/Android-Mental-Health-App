@@ -56,7 +56,7 @@ public class Quiz {
     }
     public Question previousQuestion()
     {
-        if (currentQuestion <= -1 )
+        if (currentQuestion <= 0 )
         {
             currentQuestion = -1;
         }
