@@ -11,7 +11,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
@@ -25,8 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.R;
-import com.csci3397.cadenyoung.groupproject.database.LocationHelperClass;
-import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
+import com.csci3397.cadenyoung.groupproject.model.Location;
 import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -111,11 +109,11 @@ public class LocationFragment extends Fragment {
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             //When location service is enabled
             //Get last location
-            client.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            client.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
                 @Override
-                public void onComplete(@NonNull Task<Location> task) {
+                public void onComplete(@NonNull Task<android.location.Location> task) {
                     //Initialize location
-                    Location location = task.getResult();
+                    android.location.Location location = task.getResult();
                     //Check condition
                     if (location != null) {
                         //When location not null
@@ -136,7 +134,7 @@ public class LocationFragment extends Fragment {
                             @Override
                             public void onLocationResult(LocationResult locationResult) {
                                 //Initialize location
-                                Location location1 = locationResult.getLastLocation();
+                                android.location.Location location1 = locationResult.getLastLocation();
                                 LatLng loc1 = new LatLng(location1.getLatitude(), location1.getLongitude());
                                 setNewLocation(loc1);
                             }
@@ -217,7 +215,7 @@ public class LocationFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         myRef = db.getReference("locations");
         String userID = firebaseAuth.getUid();
-        LocationHelperClass lastLoc = new LocationHelperClass(loc);
+        Location lastLoc = new Location(loc);
         myRef.child(userID).setValue(lastLoc);
 
     }
@@ -256,7 +254,7 @@ public class LocationFragment extends Fragment {
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     String uID = snapshot.getKey();
                     if (!uID.equals(userID)) {
-                        LocationHelperClass childLocation = snapshot.getValue(LocationHelperClass.class);
+                        Location childLocation = snapshot.getValue(Location.class);
                         LatLng loc = childLocation.getLastLocation();
                         googleMap.addMarker(new MarkerOptions().position(loc));
 
