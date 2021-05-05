@@ -4,6 +4,8 @@ import com.csci3397.cadenyoung.groupproject.R;
 
 import java.util.Hashtable;
 
+// Images used are open source, created by https://randallcurtis.itch.io/16-bit-rpg-icons
+
 public class Stats {
     private Hashtable<String, Stat> stats;
 
