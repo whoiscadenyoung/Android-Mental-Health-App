@@ -40,6 +40,8 @@ public class Question {
         this.answer = answer;
     }
 
+    public String getQuestionType() {return this.questionType;}
+
 
 
 }

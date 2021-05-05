@@ -119,6 +119,8 @@ public class QuizFragment extends Fragment {
                 }
                 else
                 {
+                    // Firebase needs to pull the stats from the database
+                    // stats.updateFromQuiz(quiz)
                     navigateToHome();
                 }
                 //TODO create a way to back to the saved instance of the question

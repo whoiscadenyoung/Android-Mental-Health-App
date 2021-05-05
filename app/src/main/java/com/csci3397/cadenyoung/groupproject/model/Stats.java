@@ -56,14 +56,12 @@ public class Stats {
             stat.setProgress(changeProgress + statProgress);
         }
     }
+    public void updateFromQuiz(Quiz quiz) {
+        ArrayList<Question> questions = quiz.getQuestions();
+        for (Question question : questions) {
+            updateStat(question.getQuestionType(), question.getAnswer());
+        }
 
-//    public void updateFromQuiz(Quiz quiz) {
-//        ArrayList<Question> questions = quiz.getQuestions();
-//        for (question : questions) {
-//            updateStat(question.questionType)
-//        }
-//
-//    }
-
+    }
     public Stat[] getStats() {return stats.values().toArray(new Stat[0]);}
 }
