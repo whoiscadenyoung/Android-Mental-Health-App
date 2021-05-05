@@ -89,7 +89,7 @@ public class QuizFragment extends Fragment {
                     if (!quiz.isInstructionsQuestion())
                     {
                         currentQuestion.setAnswer(seekBarAnswer.getProgress());
-                        Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     }
                     Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
                     currentQuestion = quiz.nextQuestion();

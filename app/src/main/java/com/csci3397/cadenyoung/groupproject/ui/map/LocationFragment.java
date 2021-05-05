@@ -13,9 +13,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.database.LocationHelperClass;
 import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
+import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -39,8 +43,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class LocationFragment extends Fragment {
@@ -57,21 +64,26 @@ public class LocationFragment extends Fragment {
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_location, container, false);
 
-        //Initialize location client
-        client =  client = LocationServices.getFusedLocationProviderClient(getActivity());
-        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED){
-            //Has permission
-            //Call method
-            getCurrentLocation();
+        if (isNetworkAvailable()) {
+            //Initialize location client
+            client =  client = LocationServices.getFusedLocationProviderClient(getActivity());
+            if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED){
+                //Has permission
+                //Call method
+                getCurrentLocation();
+            } else {
+                //Does not have permission
+                //Request permission
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            }
         } else {
-            //Does not have permission
-            //Request permission
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            Toast.makeText(getActivity(), "Network unavailable", Toast.LENGTH_SHORT);
         }
+
         return view;
     }
 
@@ -159,10 +171,29 @@ public class LocationFragment extends Fragment {
                     //Set position of marker
                     markerOptions.position(loc);
                     //Set title of marker
-                    markerOptions.title(loc.latitude + ":" + loc.longitude);
+                    markerOptions.title("Current location");
                     //Set user avatar
                     //TODO
-                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.robot));
+                    //Read from users
+                    String userID = firebaseAuth.getUid();
+                    db = FirebaseDatabase.getInstance();
+                    myRef = db.getReference("users");
+
+                    myRef.child(userID).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            Log.d("user is not null", user.getName());
+                            int avatar = user.getAvatarID();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.d("Database read from user", "unsuccessful");
+                        }
+                    });
+
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.robot));
                     //Remove all markers
                     googleMap.clear();
                     //Animate to zoom on the marker
@@ -188,5 +219,26 @@ public class LocationFragment extends Fragment {
         LocationHelperClass lastLoc = new LocationHelperClass(loc);
         myRef.child(userID).setValue(lastLoc);
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkCapabilities networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        boolean isAvailable = false;
+
+        if(networkCapabilities != null) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                isAvailable = true;
+            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                isAvailable = true;
+            }
+        } else {
+            Toast.makeText(getActivity(),"Sorry, network is not available",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        return isAvailable;
     }
 }

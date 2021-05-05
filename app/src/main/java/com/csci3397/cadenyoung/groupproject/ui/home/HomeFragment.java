@@ -1,6 +1,9 @@
 package com.csci3397.cadenyoung.groupproject.ui.home;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -37,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
+
 public class HomeFragment extends Fragment {
 
     private Button goToQuizBtn;
@@ -64,7 +68,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
 //        final TextView textView = root.findViewById(R.id.text_notifications);
 //        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
@@ -77,7 +80,6 @@ public class HomeFragment extends Fragment {
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //firebase sign out
                 firebaseAuth.signOut();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -93,6 +95,7 @@ public class HomeFragment extends Fragment {
         Log.d("today1", today);
 
         String userID = firebaseAuth.getUid();
+        Log.d("userID", userID);
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
 
@@ -100,9 +103,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
+                Log.d("user is not null", user.getName());
                 lastDayTaken = user.getLastDayTaken();
-                Log.d("inside onDataChange lastDayTaken is equal to" ,lastDayTaken);
-                Toast.makeText(getContext(), lastDayTaken, Toast.LENGTH_SHORT).show();
+                Log.d("inside onDataChange lastDayTaken is equal to", lastDayTaken);
                 setLastDay = true;
             }
 
@@ -120,19 +123,19 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-
-
     private void setButtonVisibility() {
-        if(!setLastDay) {
-            new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                   setButtonVisibility();
-                }
-            }, 50);
-        } else {
-            if (lastDayTaken.equals(homeViewModel.getDate()))
-                goToQuizBtn.setVisibility(root.GONE);
+        if(isNetworkAvailable()) {
+            if (!setLastDay) {
+                new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setButtonVisibility();
+                    }
+                }, 50);
+            } else {
+                if (lastDayTaken.equals(homeViewModel.getDate()))
+                    goToQuizBtn.setVisibility(root.GONE);
+            }
         }
     }
 
@@ -146,6 +149,27 @@ public class HomeFragment extends Fragment {
                         .setExitAnim(android.R.animator.fade_out)
                         .build()
         );
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkCapabilities networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        boolean isAvailable = false;
+
+        if(networkCapabilities != null) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                isAvailable = true;
+            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                isAvailable = true;
+            }
+        } else {
+            Toast.makeText(getActivity(),"Sorry, network is not available",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        return isAvailable;
     }
 
 //    private NavController getNavController() {

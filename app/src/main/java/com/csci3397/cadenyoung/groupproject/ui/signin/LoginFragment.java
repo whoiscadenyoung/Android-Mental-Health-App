@@ -1,6 +1,9 @@
 package com.csci3397.cadenyoung.groupproject.ui.signin;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.database.UserHelperClass;
@@ -56,6 +60,7 @@ public class LoginFragment extends Fragment {
     FragmentTransaction fragmentTransaction;
     FirebaseDatabase db;
     DatabaseReference myRef;
+    AlertDialogFragment dialog;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -71,10 +76,9 @@ public class LoginFragment extends Fragment {
         registerPageButton = view.findViewById(R.id.registerPageButton);
         emailText = view.findViewById(R.id.emailText);
         passwordText = view.findViewById(R.id.passwordText);
+        dialog = new AlertDialogFragment();
 
         signInButton.setSize(SignInButton.SIZE_STANDARD);
-        //loginButton.setSize(SignInButton.SIZE_STANDARD);
-        //registerPageButton.setSize(SignInButton.SIZE_STANDARD);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +86,11 @@ public class LoginFragment extends Fragment {
                 email = emailText.getText().toString();
                 password = passwordText.getText().toString();
                 signIn(email, password);
+                if(isNetworkAvailable() ) {
+                    signIn(email, password);
+                } else {
+                    alertUserError();
+                }
             }
 
         });
@@ -89,7 +98,11 @@ public class LoginFragment extends Fragment {
         registerPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToRegisterPage();
+                if(isNetworkAvailable()) {
+                    moveToRegisterPage();
+                } else {
+                    alertUserError();
+                }
             }
         });
 
@@ -109,10 +122,14 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Initialize sign in intent
-                Intent intent = googleSignInClient.getSignInIntent();
-                //Start activity for result
-                startActivityForResult(intent, 100);
+                if(isNetworkAvailable()) {
+                    //Initialize sign in intent
+                    Intent intent = googleSignInClient.getSignInIntent();
+                    //Start activity for result
+                    startActivityForResult(intent, 100);
+                } else {
+                    alertUserError();
+                }
             }
         });
         return view;
@@ -146,9 +163,9 @@ public class LoginFragment extends Fragment {
             if(signInAccountTask.isSuccessful()) {
                 //When google sign in successful
                 //Initialize string
-                String s = "Google sign in successful";
+                //String s = "Google sign in successful";
                 //Display toast
-                Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                 try {
                     //Initialize sign in account
                     GoogleSignInAccount googleSignInAccount = signInAccountTask
@@ -173,9 +190,9 @@ public class LoginFragment extends Fragment {
                                                 addUserToDB(firebaseAuth.getCurrentUser());
                                             }
                                             moveToHomepage();
-                                            Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(getActivity(), "sign in Unsuccessful" , Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
@@ -198,7 +215,7 @@ public class LoginFragment extends Fragment {
         String email = user.getEmail();
         String userID = user.getUid();
 
-        User currentUser = new User(name, email, userID, "never");
+        User currentUser = new User(name, email, userID, "never", 1);
         myRef.child(userID).setValue(currentUser);
         Log.d("registered", "into database");
     }
@@ -267,5 +284,31 @@ public class LoginFragment extends Fragment {
             passwordText.setError(null);
         }
         return valid;
+    }
+
+
+    private void alertUserError() {
+        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkCapabilities networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        boolean isAvailable = false;
+
+        if(networkCapabilities != null) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                isAvailable = true;
+            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                isAvailable = true;
+            }
+        } else {
+            Toast.makeText(getActivity(),"Sorry, network is not available",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        return isAvailable;
     }
 }

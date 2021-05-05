@@ -6,22 +6,17 @@ public class User {
     private String name;
     private String dbID;
     private String lastDayTaken;
+    private int avatarID;
 
     private User() {}
 
-    public User(String name, String email, String dbID, String lastDayTaken) {
+    public User(String name, String email, String dbID, String lastDayTaken, int avatarID) {
         this.email = email;
         this.name = name;
         this.dbID = dbID;
         this.lastDayTaken = lastDayTaken;
+        this.avatarID = avatarID;
     }
-
-//    public User(User user) {
-//        this.email = user.email;
-//        this.name = user.name;
-//        this.dbID = user.dbID;
-//        this.lastDayTaken = user.lastDayTaken;
-//    }
 
     public String getEmail() {
         return email;
@@ -31,11 +26,11 @@ public class User {
         this.email = email;
     }
 
-    public String getFirstName() {
+    public String getName() {
         return name;
     }
 
-    public void setFirstName(String firstName) {
+    public void setName(String firstName) {
         this.name = firstName;
     }
 
@@ -51,9 +46,12 @@ public class User {
 
     public void setLastDayTaken(String lastDayTaken) { this.lastDayTaken = lastDayTaken;}
 
+    public int getAvatarID() {
+        return avatarID;
+    }
 
-
-
-
+    public void setAvatarID(int avatarID) {
+        this.avatarID = avatarID;
+    }
 
 }
