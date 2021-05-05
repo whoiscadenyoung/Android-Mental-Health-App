@@ -2,6 +2,7 @@ package com.csci3397.cadenyoung.groupproject.model;
 
 import com.csci3397.cadenyoung.groupproject.R;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 // Images used are open source, created by https://randallcurtis.itch.io/16-bit-rpg-icons
@@ -54,6 +55,14 @@ public class Stats {
             int changeProgress = (int) (statProgress * change);
             stat.setProgress(changeProgress + statProgress);
         }
+    }
+
+    public void updateFromQuiz(Quiz quiz) {
+        ArrayList<Question> questions = quiz.getQuestions();
+        for (question : questions) {
+            updateStat(question.questionType)
+        }
+
     }
 
     public Stat[] getStats() {return stats.values().toArray(new Stat[0]);}
