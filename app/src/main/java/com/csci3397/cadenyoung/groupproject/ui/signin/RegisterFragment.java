@@ -162,6 +162,7 @@ public class RegisterFragment extends Fragment {
         Stats stats = new Stats();
         db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");
+        //TODO add stats
     }
 
 }

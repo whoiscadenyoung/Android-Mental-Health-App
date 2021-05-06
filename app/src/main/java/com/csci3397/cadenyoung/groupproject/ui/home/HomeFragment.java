@@ -54,6 +54,7 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase db;
     private DatabaseReference myRef;
+    private int avatarID;
 
 
 
@@ -102,6 +103,7 @@ public class HomeFragment extends Fragment {
                     User user = snapshot.getValue(User.class);
                     lastDayTaken = user.getLastDayTaken();
                     setLastDay = true;
+
                 }
 
                 @Override
