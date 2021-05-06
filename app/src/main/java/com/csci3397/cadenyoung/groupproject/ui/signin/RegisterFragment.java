@@ -155,6 +155,7 @@ public class RegisterFragment extends Fragment {
         User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never", 1);
         myRef.child(firebaseAuth.getUid()).setValue(user);
         Log.d("registered", "into database");
+        //TODO add stats
     }
 
 }
