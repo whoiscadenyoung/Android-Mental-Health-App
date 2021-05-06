@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference statsRef;
     private int defaultAvatar;
     private ImageView avatarView;
+    private RadioGroup radioGroup;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +89,21 @@ public class HomeFragment extends Fragment {
                 firebaseAuth.signOut();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        radioGroup = root.findViewById(R.id.radioGroup);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.greenButton:
+                        // TODO: update stats database; set avatarType to 1
+                        break;
+                    case R.id.yellowButton:
+                        // TODO: update stats database; set avatarType to 2
+                        break;
+                }
             }
         });
 
@@ -124,6 +141,9 @@ public class HomeFragment extends Fragment {
                         int avatarId = root.getResources().getIdentifier(avatarPath, "drawable", root.getContext().getPackageName());
                         avatarView.setImageDrawable(ResourcesCompat.getDrawable(root.getResources(), avatarId, null));
                     }
+                    int avatarType = stats.getAvatarType();
+                    if (avatarType == 2) radioGroup.check(R.id.yellowButton);
+                    else radioGroup.check(R.id.greenButton);
                 }
 
                 @Override
