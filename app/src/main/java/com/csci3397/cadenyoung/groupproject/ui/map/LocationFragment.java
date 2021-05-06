@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Location;
+import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -172,15 +173,15 @@ public class LocationFragment extends Fragment {
                     //Read current user from users
                     String userID = firebaseAuth.getUid();
                     db = FirebaseDatabase.getInstance();
-                    myRef = db.getReference("users");
+                    myRef = db.getReference("stats");
 
                     myRef.child(userID).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             //Get user info
-                            User user = snapshot.getValue(User.class);
+                            Stats stats = snapshot.getValue(Stats.class);
                             //Get user avatar
-                            int avatar = user.getAvatarID();
+                            int avatar = stats.getAvatarID();
                             //TODO place avatar as marker from avatar ID
                             //Set user marker
                             googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));
@@ -204,13 +205,13 @@ public class LocationFragment extends Fragment {
                                 Double cLng = childLocation.getLongitude();
 
                                 //Read avatar of child from database
-                                DatabaseReference childRef = db.getReference("users");
+                                DatabaseReference childRef = db.getReference("stats");
 
                                 childRef.child(uID).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        User user = snapshot.getValue(User.class);
-                                        int avatar = user.getAvatarID();
+                                        Stats stat = snapshot.getValue(Stats.class);
+                                        int avatar = stat.getAvatarID();
                                         //TODO place avatar as marker from avatar ID
                                         //Set user avatar
                                         googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));

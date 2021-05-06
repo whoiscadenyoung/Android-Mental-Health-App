@@ -1,10 +1,6 @@
 package com.csci3397.cadenyoung.groupproject.ui.home;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -13,12 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -28,10 +21,7 @@ import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
-import com.csci3397.cadenyoung.groupproject.model.Stat;
-import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
-import com.csci3397.cadenyoung.groupproject.ui.statistics.StatisticsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 
 
 public class HomeFragment extends Fragment {
@@ -72,10 +61,10 @@ public class HomeFragment extends Fragment {
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()) {
+                if(HomeMainActivity.isNetworkAvailable()) {
                     navigateToQuiz();
                 } else {
-                    alertUserError();
+                    HomeMainActivity.alertUserError(dialog);
                 }
             }
         });
@@ -96,12 +85,12 @@ public class HomeFragment extends Fragment {
         String today = df.format(calendar.getTime());
         homeViewModel.setDate(today);
 
-        if(isNetworkAvailable()) {
+        if(HomeMainActivity.isNetworkAvailable()) {
             String userID = firebaseAuth.getUid();
             db = FirebaseDatabase.getInstance();
             myRef = db.getReference("users");
             Log.d("Checking userID in home fragment: ", userID);
-            myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
@@ -126,7 +115,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setButtonVisibility() {
-        if(isNetworkAvailable()) {
+        if(HomeMainActivity.isNetworkAvailable()) {
             if (!setLastDay) {
                 new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -158,29 +147,29 @@ public class HomeFragment extends Fragment {
         );
     }
 
-    private void alertUserError() {
-        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        boolean isAvailable = false;
-
-        if(networkCapabilities != null) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                isAvailable = true;
-            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                isAvailable = true;
-            }
-        } else {
-            Toast.makeText(getActivity(),"Sorry, network is not available",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
-    }
+//    private void alertUserError() {
+//        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
+//    }
+//
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager connectivityManager =
+//                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkCapabilities networkCapabilities =
+//                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+//        boolean isAvailable = false;
+//
+//        if(networkCapabilities != null) {
+//            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+//                isAvailable = true;
+//            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+//                isAvailable = true;
+//            }
+//        } else {
+//            Toast.makeText(getActivity(),"Sorry, network is not available",
+//                    Toast.LENGTH_LONG).show();
+//        }
+//
+//        return isAvailable;
+//    }
 
 }
