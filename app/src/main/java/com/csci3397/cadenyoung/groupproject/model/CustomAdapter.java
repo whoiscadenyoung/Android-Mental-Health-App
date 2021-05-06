@@ -118,6 +118,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         // Load in the image and set it in the view
         int imageId = stat.getImageId();
         Drawable image = ResourcesCompat.getDrawable(resources, imageId, null);
+
+        int lastProg = stat.getLastProgress();
+        int prog = stat.getProgress();
+
+
+
         viewHolder.getStatImage().setImageDrawable(image);
 
         // Load in the description ID, pull description from strings, set text in view
