@@ -54,6 +54,7 @@ public class QuizFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
+
         dialog = new AlertDialogFragment();
         db = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -63,6 +64,7 @@ public class QuizFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         quizViewModel =  ViewModelProviders.of(requireActivity()).get(QuizViewModel.class);
         view = inflater.inflate(R.layout.fragment_quiz, container, false);
+
         final TextView textView = view.findViewById(R.id.question_view);
         quizViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -89,7 +91,7 @@ public class QuizFragment extends Fragment {
 
                 if (!quiz.isFinalQuestion()) {
                     if (!quiz.isInstructionsQuestion()) {
-                        currentQuestion.setAnswer(progessBarAnswer.getProgress());
+                        currentQuestion.setAnswer(progessBarAnswer.getProgress() + 1);
                     }
                     progessBarAnswer.setVisibility(view.VISIBLE);
                     Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
@@ -153,29 +155,15 @@ public class QuizFragment extends Fragment {
         myRef = db.getReference("stats");
 
         //Read user's current stats from database
-        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+
+        myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Get user info
-                // UserStats userStats = snapshot.getValue(UserStats.class);
-                for (Question question : quiz.getQuestions()) {
-                    Log.d("QUIZ QUESTION TYPE: ", question.getQuestionType());
-                }
                 Stats stats = snapshot.getValue(Stats.class);
                 if (stats == null) {
                     Log.d("Null Stats Object", "Can't get the Stats object from database");
                 } else {
-                    Log.d("Checking Quiz Database: ", String.valueOf(stats.getStats().get("mental").getProgress()));
-                    //for (Stat stat : stats.getStats().values().toArray(new Stat[0])) {
-                    //    Log.d("GOT STAT: ", stat.getName());
-                    //}
-                    // Stats stats = new Stats(userStats);
-                    //Update stats
-                    // userStats = stats.updateFromQuiz(userID, quiz);
                     stats.quizUpdate(quiz);
-                    //stats.updateStat("mental", 1);
-                    Log.d("Checking Quiz Database: ", "After Update: " + stats.getStats().get("mental").getProgress());
-                    //Set new stats to database
                     myRef.child(userID).setValue(stats);
                 }
             }
