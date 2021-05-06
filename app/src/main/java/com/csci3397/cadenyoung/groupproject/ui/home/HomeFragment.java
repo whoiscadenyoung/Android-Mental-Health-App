@@ -11,24 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
-import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
-import com.csci3397.cadenyoung.groupproject.model.Stat;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
-import com.csci3397.cadenyoung.groupproject.ui.statistics.StatisticsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,8 +51,10 @@ public class HomeFragment extends Fragment {
     private AlertDialogFragment dialog;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase db;
-    private DatabaseReference myRef;
-
+    private DatabaseReference userRef;
+    private DatabaseReference statsRef;
+    private int defaultAvatar;
+    private int avatarType;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +62,10 @@ public class HomeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_home, container, false);
         firebaseAuth = FirebaseAuth.getInstance();
         dialog = new AlertDialogFragment();
+
+        defaultAvatar = R.drawable.fitness;
+        ImageView imageView = root.findViewById(R.id.avatarImage);
+        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), defaultAvatar, null));
 
         goToQuizBtn = root.findViewById(R.id.goToQuizBtn);
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
@@ -94,9 +98,10 @@ public class HomeFragment extends Fragment {
         if(isNetworkAvailable()) {
             String userID = firebaseAuth.getUid();
             db = FirebaseDatabase.getInstance();
-            myRef = db.getReference("users");
+            userRef = db.getReference("users");
+            statsRef = db.getReference("stats");
 
-            myRef.child(userID).addValueEventListener(new ValueEventListener() {
+            userRef.child(userID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
@@ -109,6 +114,20 @@ public class HomeFragment extends Fragment {
                     Log.d("Database read from user in home", "unsuccessful");
                 }
             });
+
+            statsRef.child(userID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Stats stats = snapshot.getValue(Stats.class);
+                    int avatarId = stats.returnAvatarId();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("Database read from user in home", "unsuccessful");
+                }
+            });
+
         }
 
         setButtonVisibility();

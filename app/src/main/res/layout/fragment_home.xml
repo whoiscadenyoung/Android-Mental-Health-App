@@ -39,4 +39,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/background" />
 
+    <ImageView
+        android:id="@+id/avatarImage"
+        android:layout_width="287dp"
+        android:layout_height="243dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.676"
+        app:srcCompat="@drawable/eating" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
