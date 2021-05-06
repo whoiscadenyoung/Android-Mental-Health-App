@@ -68,10 +68,10 @@ public class HomeFragment extends Fragment {
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()) {
+                if(((HomeMainActivity) getActivity()).isNetworkAvailable()) {
                     navigateToQuiz();
                 } else {
-                    alertUserError();
+                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
                 }
             }
         });
@@ -92,7 +92,7 @@ public class HomeFragment extends Fragment {
         String today = df.format(calendar.getTime());
         homeViewModel.setDate(today);
 
-        if(isNetworkAvailable()) {
+        if(((HomeMainActivity) getActivity()).isNetworkAvailable()) {
             String userID = firebaseAuth.getUid();
             db = FirebaseDatabase.getInstance();
             myRef = db.getReference("users");
@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setButtonVisibility() {
-        if(isNetworkAvailable()) {
+        if(((HomeMainActivity) getActivity()).isNetworkAvailable()) {
             if (!setLastDay) {
                 new android.os.Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
@@ -145,31 +145,6 @@ public class HomeFragment extends Fragment {
                         .setExitAnim(android.R.animator.fade_out)
                         .build()
         );
-    }
-
-    private void alertUserError() {
-        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        boolean isAvailable = false;
-
-        if(networkCapabilities != null) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                isAvailable = true;
-            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                isAvailable = true;
-            }
-        } else {
-            Toast.makeText(getActivity(),"Sorry, network is not available",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
     }
 
 }

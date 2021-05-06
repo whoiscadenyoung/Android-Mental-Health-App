@@ -23,6 +23,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
@@ -46,7 +47,7 @@ public class QuizFragment extends Fragment {
     private Quiz quiz;
     private Question currentQuestion;
     private View view;
-    private SeekBar progessBarAnswer;
+    private SeekBar progressBarAnswer;
     private HomeViewModel homeViewModel;
     private AlertDialogFragment dialog;
 
@@ -76,8 +77,8 @@ public class QuizFragment extends Fragment {
         quizViewModel.setText(getString(R.string.question_instructions));
         next = view.findViewById(R.id.next);
         back = view.findViewById(R.id.back);
-        progessBarAnswer = (SeekBar)view.findViewById(R.id.questionAnswer);
-        progessBarAnswer.setVisibility(view.GONE);
+        progressBarAnswer = (SeekBar)view.findViewById(R.id.questionAnswer);
+        progressBarAnswer.setVisibility(view.GONE);
         quiz = new Quiz();
         loadButtons();
         return view;
@@ -91,9 +92,9 @@ public class QuizFragment extends Fragment {
 
                 if (!quiz.isFinalQuestion()) {
                     if (!quiz.isInstructionsQuestion()) {
-                        currentQuestion.setAnswer(progessBarAnswer.getProgress() + 1);
+                        currentQuestion.setAnswer(progressBarAnswer.getProgress() + 1);
                     }
-                    progessBarAnswer.setVisibility(view.VISIBLE);
+                    progressBarAnswer.setVisibility(view.VISIBLE);
                     Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
                     currentQuestion = quiz.nextQuestion();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
@@ -105,7 +106,7 @@ public class QuizFragment extends Fragment {
 
                 else {
                     Log.d("Before Network Check", "got here");
-                    if (isNetworkAvailable()) {
+                    if (((HomeMainActivity) getActivity()).isNetworkAvailable()) {
                         setLastDayTaken();
 //                        quizViewModel.setQuiz(quiz);
                         setToDB();
@@ -115,7 +116,7 @@ public class QuizFragment extends Fragment {
                         //TODO have the submit button take you back to the home page
                     }
                     else {
-                        alertUserError();
+                        ((HomeMainActivity) getActivity()).alertUserError(dialog);
                     }
                 }
             }
@@ -131,7 +132,7 @@ public class QuizFragment extends Fragment {
                     next.setText("Next");
                     if (quiz.getQuestionNum() == 1)
                     {
-                        progessBarAnswer.setVisibility(view.GONE);
+                        progressBarAnswer.setVisibility(view.GONE);
                     }
                     else
                     {
@@ -186,11 +187,11 @@ public class QuizFragment extends Fragment {
         int answer = currentQuestion.getAnswer();
         if (answer == -1)
         {
-            progessBarAnswer.setProgress(0);
+            progressBarAnswer.setProgress(0);
         }
         else
         {
-            progessBarAnswer.setProgress(answer);
+            progressBarAnswer.setProgress(answer);
         }
     }
 
@@ -205,31 +206,5 @@ public class QuizFragment extends Fragment {
                         .build()
         );
     }
-
-    private void alertUserError() {
-        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        boolean isAvailable = false;
-
-        if(networkCapabilities != null) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                isAvailable = true;
-            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                isAvailable = true;
-            }
-        } else {
-            Toast.makeText(getActivity(),"Sorry, network is not available",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
-    }
-
 
 }

@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Location;
 import com.csci3397.cadenyoung.groupproject.model.User;
@@ -64,7 +65,7 @@ public class LocationFragment extends Fragment {
         //Initialize view
         View view = inflater.inflate(R.layout.fragment_location, container, false);
 
-        if (isNetworkAvailable()) {
+        if (((HomeMainActivity) getActivity()).isNetworkAvailable()) {
             //Initialize location client
             client = client = LocationServices.getFusedLocationProviderClient(getActivity());
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -264,26 +265,6 @@ public class LocationFragment extends Fragment {
         Location lastLoc = new Location(loc.latitude, loc.longitude);
         myRef.child(userID).setValue(lastLoc);
 
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        boolean isAvailable = false;
-
-        if (networkCapabilities != null) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                isAvailable = true;
-            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                isAvailable = true;
-            }
-        } else {
-            Toast.makeText(getActivity(), "Sorry, network is not available", Toast.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
     }
 
 }
