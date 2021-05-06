@@ -152,7 +152,8 @@ public class RegisterFragment extends Fragment {
     private void addToDB() {
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
-        User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never", 1);
+        Log.d("Checking avatar id to be set into db: ", String.valueOf(R.drawable.happy_green));
+        User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never", R.drawable.happy_green);
 
         String userID = firebaseAuth.getUid();
         assert userID != null;

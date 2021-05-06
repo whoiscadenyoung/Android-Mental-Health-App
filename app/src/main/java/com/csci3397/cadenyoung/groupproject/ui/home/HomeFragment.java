@@ -2,6 +2,7 @@ package com.csci3397.cadenyoung.groupproject.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -55,6 +58,7 @@ public class HomeFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference myRef;
     private int avatarID;
+    private ImageView avatarImage;
 
 
 
@@ -96,14 +100,17 @@ public class HomeFragment extends Fragment {
             String userID = firebaseAuth.getUid();
             db = FirebaseDatabase.getInstance();
             myRef = db.getReference("users");
-
-            myRef.child(userID).addValueEventListener(new ValueEventListener() {
+            Log.d("Checking userID in home fragment: ", userID);
+            myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
+                    Log.d("Checking user in home fragment before: ", user.getName());
                     lastDayTaken = user.getLastDayTaken();
                     setLastDay = true;
-
+                    avatarID = user.getAvatarID();
+                    Log.d("Checking user in home fragment after: ", user.getName());
+                    Log.d("Checking avatar id form database: ", String.valueOf(avatarID));
                 }
 
                 @Override
@@ -112,6 +119,7 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
 
         setButtonVisibility();
         return root;
@@ -129,6 +137,9 @@ public class HomeFragment extends Fragment {
             } else {
                 if (lastDayTaken.equals(homeViewModel.getDate()))
                     goToQuizBtn.setVisibility(root.GONE);
+//                Drawable image = ContextCompat.getDrawable(getContext(), avatarID);
+//                avatarImage.setImageDrawable(image);
+
             }
         } else {
             goToQuizBtn.setVisibility(root.GONE);

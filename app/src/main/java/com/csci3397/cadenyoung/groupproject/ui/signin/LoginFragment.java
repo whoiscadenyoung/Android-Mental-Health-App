@@ -46,6 +46,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.CountDownLatch;
+
 import static android.content.ContentValues.TAG;
 
 public class LoginFragment extends Fragment {
@@ -186,13 +188,17 @@ public class LoginFragment extends Fragment {
                                             db = FirebaseDatabase.getInstance();
                                             myRef = db.getReference("users");
 
+                                            CountDownLatch countDownLatch = new CountDownLatch(1);
                                             myRef.child(userID).addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     User user = snapshot.getValue(User.class);
                                                     if(user == null) {
                                                         addUserToDB(firebaseAuth.getCurrentUser());
+                                                    } else {
+                                                        Log.d("here", "1");
                                                     }
+                                                    countDownLatch.countDown();
                                                 }
 
                                                 @Override
@@ -204,6 +210,11 @@ public class LoginFragment extends Fragment {
 //                                                Log.d("got to task successful", "is new user");
 //                                                addUserToDB(firebaseAuth.getCurrentUser());
 //                                            }
+                                            try {
+                                                countDownLatch.await();
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
                                             Log.d("got to task successful", "after new user");
                                             moveToHomepage();
                                         } else {
@@ -230,8 +241,9 @@ public class LoginFragment extends Fragment {
         String email = user.getEmail();
         String userID = user.getUid();
 
+
         //Add user to user table
-        User currentUser = new User(name, email, userID, "never", 1);
+        User currentUser = new User(name, email, userID, "never",  R.drawable.happy_green);
         myRef.child(userID).setValue(currentUser);
         Log.d("got to add to database", "start");
 
