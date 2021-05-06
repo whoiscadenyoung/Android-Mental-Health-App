@@ -77,7 +77,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
     // Initialize data set for adaptor in the constructor
-    public CustomAdapter(Stat[] stats) {this.stats = stats;}
+    //public CustomAdapter(Stat[] stats) {this.stats = stats;}
+    public CustomAdapter(Stats stats) {this.stats = stats.getStats().values().toArray(new Stat[0]);}
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
     // Create new views (invoked by the layout manager)

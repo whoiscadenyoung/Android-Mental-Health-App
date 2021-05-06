@@ -12,14 +12,14 @@ public class Quiz {
     {
         quizQuestions = new ArrayList<Question> ();
         quizQuestions.add(new Question(R.string.question_instructions, ""));
-        quizQuestions.add(new Question(R.string.question_1, "mental"));
-        quizQuestions.add(new Question(R.string.question_2, "mental"));
-        quizQuestions.add(new Question(R.string.question_3, "mental"));
-        quizQuestions.add(new Question(R.string.question_4, "mental"));
-        quizQuestions.add(new Question(R.string.question_5, "mental"));
-        quizQuestions.add(new Question(R.string.question_6, "mental"));
-        quizQuestions.add(new Question(R.string.question_7, "mental"));
-        quizQuestions.add(new Question(R.string.question_8, "mental"));
+        //quizQuestions.add(new Question(R.string.question_1, "mental"));
+        //quizQuestions.add(new Question(R.string.question_2, "mental"));
+        //quizQuestions.add(new Question(R.string.question_3, "mental"));
+        //quizQuestions.add(new Question(R.string.question_4, "mental"));
+        //quizQuestions.add(new Question(R.string.question_5, "mental"));
+        //quizQuestions.add(new Question(R.string.question_6, "mental"));
+        //quizQuestions.add(new Question(R.string.question_7, "mental"));
+        //quizQuestions.add(new Question(R.string.question_8, "mental"));
         quizQuestions.add(new Question(R.string.question_9,"mental"));
         quizQuestions.add(new Question(R.string.question_10, "water"));
         quizQuestions.add(new Question(R.string.question_11, "fitness"));

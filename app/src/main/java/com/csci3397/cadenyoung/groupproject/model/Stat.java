@@ -27,6 +27,15 @@ public class Stat {
         this.id = id;
     }
 
+    public Stat() {
+        this.imageId = 1;
+        this.name = "stat";
+        this.descId = 1;
+        this.progress = 10;
+        this.colorId = 1;
+        this.id = 100;
+    }
+
     public int getProgress() {return this.progress;}
     public int getImageId() {return this.imageId;}
     public String getName() {return this.name;}
