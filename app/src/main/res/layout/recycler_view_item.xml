@@ -27,9 +27,9 @@
 
       <ImageView
           android:id="@+id/lastImage"
-          android:layout_width="67dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
+          android:layout_gravity="top|left"
           android:elevation="10dp"
           android:foregroundGravity="center"
           app:srcCompat="@drawable/down" />

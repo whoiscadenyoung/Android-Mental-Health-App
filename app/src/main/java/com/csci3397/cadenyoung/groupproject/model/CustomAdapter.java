@@ -51,6 +51,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         private final ImageView statImage;
         private final TextView statDesc;
         private final ProgressBar statBar;
+        private final ImageView lastStat;
         private final Resources res;
 
         public ViewHolder(View v) {
@@ -66,6 +67,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
             statImage = v.findViewById(R.id.statImage);
             statDesc = v.findViewById(R.id.statDesc);
             statBar = v.findViewById(R.id.statBar);
+            lastStat = v.findViewById(R.id.lastImage);
             res = v.getResources();
         }
 
@@ -74,6 +76,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         public TextView getStatDesc() {return statDesc;}
         public ProgressBar getStatBar() {return statBar;}
         public Resources getRes() {return res;}
+        public ImageView getLastStat() {return lastStat;}
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
     // Initialize data set for adaptor in the constructor
@@ -119,10 +122,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         int imageId = stat.getImageId();
         Drawable image = ResourcesCompat.getDrawable(resources, imageId, null);
 
+        // Load in the progress and set the up or down image
         int lastProg = stat.getLastProgress();
         int prog = stat.getProgress();
-
-
+        Drawable upImage = ResourcesCompat.getDrawable(resources, R.drawable.up, null);
+        Drawable downImage = ResourcesCompat.getDrawable(resources, R.drawable.down, null);
+        if (lastProg < prog) viewHolder.getLastStat().setImageDrawable(upImage);
+        else viewHolder.getLastStat().setImageDrawable(downImage);
 
         viewHolder.getStatImage().setImageDrawable(image);
 

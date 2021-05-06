@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference userRef;
     private DatabaseReference statsRef;
     private int defaultAvatar;
-    private int avatarType;
+    private ImageView avatarView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,8 +64,8 @@ public class HomeFragment extends Fragment {
         dialog = new AlertDialogFragment();
 
         defaultAvatar = R.drawable.fitness;
-        ImageView imageView = root.findViewById(R.id.avatarImage);
-        imageView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), defaultAvatar, null));
+        avatarView = root.findViewById(R.id.avatarImage);
+        avatarView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), defaultAvatar, null));
 
         goToQuizBtn = root.findViewById(R.id.goToQuizBtn);
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +119,11 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Stats stats = snapshot.getValue(Stats.class);
-                    int avatarId = stats.returnAvatarId();
+                    String avatarPath = stats.returnAvatarPath();
+                    if (avatarPath != null) {
+                        int avatarId = root.getResources().getIdentifier(avatarPath, "drawable", root.getContext().getPackageName());
+                        avatarView.setImageDrawable(ResourcesCompat.getDrawable(root.getResources(), avatarId, null));
+                    }
                 }
 
                 @Override

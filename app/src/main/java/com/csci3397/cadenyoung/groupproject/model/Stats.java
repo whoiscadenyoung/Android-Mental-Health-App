@@ -59,8 +59,9 @@ public class Stats {
         return totalStats / stats.size();
     }
 
-    public int returnAvatarId() {
+    public String returnAvatarPath() {
         String fileName = "";
+
         int averageStats = averageStats();
         if (averageStats > 85) fileName += "happy_open";
         else if (averageStats > 65) fileName += "happy";
@@ -79,7 +80,7 @@ public class Stats {
                 fileName += "_green";
                 break;
         }
-        return 1;
+        return fileName;
     }
 
     public Map<String, Stat> getStats() {return stats;}
