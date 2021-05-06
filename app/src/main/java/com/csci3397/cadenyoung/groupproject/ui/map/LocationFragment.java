@@ -188,7 +188,7 @@ public class LocationFragment extends Fragment {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-                            Log.d("Database read from user", "unsuccessful");
+                            Log.d("Database read from user in user location", "unsuccessful");
                         }
                     });
 
@@ -218,7 +218,7 @@ public class LocationFragment extends Fragment {
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Log.d("Database read from user", "unsuccessful");
+                                        Log.d("Database read from user in child location", "unsuccessful");
                                     }
                                 });
 

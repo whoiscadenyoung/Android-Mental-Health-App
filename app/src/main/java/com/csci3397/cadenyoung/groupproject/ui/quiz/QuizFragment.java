@@ -28,10 +28,16 @@ import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
+import com.csci3397.cadenyoung.groupproject.model.User;
+import com.csci3397.cadenyoung.groupproject.model.UserStats;
 import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class QuizFragment extends Fragment {
 
@@ -53,6 +59,8 @@ public class QuizFragment extends Fragment {
         super.onCreate(savedInstanceState);
         homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
         dialog = new AlertDialogFragment();
+        db = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -98,12 +106,14 @@ public class QuizFragment extends Fragment {
                 }
 
                 else {
+                    Log.d("Before Network Check", "got here");
                     if (isNetworkAvailable()) {
                         setLastDayTaken();
-                        quizViewModel.setQuiz(quiz);
+//                        quizViewModel.setQuiz(quiz);
                         setToDB();
-                        navigateToHome();
                         Log.d("Quiz Submitted", quiz.toString());
+                        navigateToHome();
+
                         //TODO have the submit button take you back to the home page
                     }
                     else {
@@ -143,12 +153,32 @@ public class QuizFragment extends Fragment {
     }
 
     private void setToDB() {
-        // call stats
+        String userID = firebaseAuth.getUid();
+        myRef = db.getReference("stats");
+
+        //Read user's current stats from database
+        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //Get user info
+                UserStats userStats = snapshot.getValue(UserStats.class);
+                Log.d("Checking Quiz Dtabase: ", String.valueOf(userStats.getStat1progress()));
+                Stats stats = new Stats(userStats);
+                //Update stats
+                userStats = stats.updateFromQuiz(userID, quiz);
+                Log.d("Checking Quiz Dtabase: ", "After Update: " + String.valueOf(userStats.getStat1progress()));
+                //Set new stats to database
+                myRef.child(userID).setValue(userStats);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Database read from user in quiz", "unsuccessful");
+            }
+        });
     }
 
     private void setLastDayTaken() {
-        db = FirebaseDatabase.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
         myRef = db.getReference("users");// path to the date stuff
         String userID = firebaseAuth.getUid();
         myRef.child(userID).child("lastDayTaken").setValue(homeViewModel.getDate());
