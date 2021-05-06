@@ -1,11 +1,11 @@
 package com.csci3397.cadenyoung.groupproject.model;
 
 import com.csci3397.cadenyoung.groupproject.R;
+
 import java.util.ArrayList;
 public class Quiz {
 
     private ArrayList<Question> quizQuestions;
-
     private int currentQuestion;
 
     public Quiz()

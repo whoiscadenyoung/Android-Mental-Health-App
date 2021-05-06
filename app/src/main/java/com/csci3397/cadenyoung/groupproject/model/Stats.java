@@ -72,61 +72,32 @@ public class Stats {
             double change;
             switch (quizAnswer) {
                 case 1:
-                    change = -0.75;
+                    change = -0.25;
                     break;
                 case 2:
-                    change = -0.5;
+                    change = -0.1;
                     break;
                 case 3:
-                    change = 0.25;
+                    change = 0.02;
                     break;
                 case 4:
-                    change = 0.5;
+                    if (statProgress < 10 ) change = 2.0;
+                    else change = 0.1;
                     break;
                 case 5:
-                    change = 0.75;
+                    if (statProgress < 10 ) change = 3.0;
+                    else change = 0.25;
                     break;
                 default:
-                    change = 0;
+                    if (statProgress < 10 ) change = 4.0;
+                    else change = 0;
                     break;
-//                case 1:
-//                    change = -0.25;
-//                    break;
-//                case 2:
-//                    change = -0.1;
-//                    break;
-//                case 3:
-//                    change = 0.02;
-//                    break;
-//                case 4:
-//                    change = 0.1;
-//                    break;
-//                case 5:
-//                    change = 0.25;
-//                    break;
-//                default:
-//                    change = 0;
-//                    break;
             }
             int changeProgress = (int) (statProgress * change);
             Log.d("CHANGEPROG: ", String.valueOf(changeProgress));
             Log.d("NEW STAT: ", String.valueOf(changeProgress + statProgress));
             stat.setProgress(changeProgress + statProgress);
         }
-    }
-
-    public UserStats updateFromQuiz(String userID, Quiz quiz) {
-        ArrayList<Question> questions = quiz.getQuestions();
-        for (Question question : questions) {
-            String questionType = question.getQuestionType();
-            if (stats.containsKey(questionType)) {
-                updateStat(questionType, question.getAnswer());
-            }
-        }
-        UserStats userStats = new UserStats(userID, stats.get("mental").getProgress(), stats.get("stress").getProgress(),
-                stats.get("screen").getProgress(), stats.get("eating").getProgress(), stats.get("water").getProgress(),
-                stats.get("fitness").getProgress(), stats.get("sleep").getProgress());
-        return userStats;
     }
 
     public void quizUpdate(Quiz quiz) {
