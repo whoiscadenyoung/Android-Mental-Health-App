@@ -1,7 +1,5 @@
 package com.csci3397.cadenyoung.groupproject.model;
 
-import android.util.Log;
-
 import com.csci3397.cadenyoung.groupproject.R;
 
 import java.util.ArrayList;
@@ -12,18 +10,6 @@ import java.util.Map;
 
 public class Stats {
     private Map<String, Stat> stats;
-
-    public Stats(UserStats userStats) {
-        stats = new HashMap<String, Stat>();
-
-        this.addStat(R.drawable.mental, 1, "mental", R.string.mental_desc, R.color.stat_mental, userStats.getStat1progress());
-        this.addStat(R.drawable.stress, 2, "stress", R.string.stress_desc, R.color.stat_stress,  userStats.getStat2progress());
-        this.addStat(R.drawable.screen, 3, "screen", R.string.screen_desc, R.color.stat_screen,  userStats.getStat3progress());
-        this.addStat(R.drawable.eating, 4, "eating", R.string.eating_desc, R.color.stat_eating, userStats.getStat4progress());
-        this.addStat(R.drawable.water, 5, "water", R.string.water_desc, R.color.stat_water, userStats.getStat5progress());
-        this.addStat(R.drawable.fitness, 6, "fitness", R.string.fitness_desc, R.color.stat_fitness, userStats.getStat6progress());
-        this.addStat(R.drawable.sleep, 7, "sleep", R.string.sleep_desc, R.color.stat_sleep, userStats.getStat7progress());
-    }
 
     public Stats() {
         stats = new HashMap<String, Stat>();
@@ -68,7 +54,6 @@ public class Stats {
             Stat stat = stats.get(statName);
             assert stat != null;
             int statProgress = stat.getProgress();
-            Log.d("UPDATESTAT PROG + ANSWER:", String.valueOf(statProgress) + " " + String.valueOf(quizAnswer));
             double change;
             switch (quizAnswer) {
                 case 1:
@@ -94,14 +79,11 @@ public class Stats {
                     break;
             }
             int changeProgress = (int) (statProgress * change);
-            Log.d("CHANGEPROG: ", String.valueOf(changeProgress));
-            Log.d("NEW STAT: ", String.valueOf(changeProgress + statProgress));
             stat.setProgress(changeProgress + statProgress);
         }
     }
 
     public void quizUpdate(Quiz quiz) {
-        Log.d("QUIZUPDATE", "Updating Stats from Quiz Now");
         ArrayList<Question> questions = quiz.getQuestions();
         for (Question question : questions) {
             String questionType = question.getQuestionType();
