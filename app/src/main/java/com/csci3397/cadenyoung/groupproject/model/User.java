@@ -6,16 +6,14 @@ public class User {
     private String name;
     private String dbID;
     private String lastDayTaken;
-    private int avatarID;
 
     private User() {}
 
-    public User(String name, String email, String dbID, String lastDayTaken, int avatarID) {
+    public User(String name, String email, String dbID, String lastDayTaken) {
         this.email = email;
         this.name = name;
         this.dbID = dbID;
         this.lastDayTaken = lastDayTaken;
-        this.avatarID = avatarID;
     }
 
     public String getEmail() {
@@ -45,13 +43,5 @@ public class User {
     public String getLastDayTaken() { return lastDayTaken; }
 
     public void setLastDayTaken(String lastDayTaken) { this.lastDayTaken = lastDayTaken;}
-
-    public int getAvatarID() {
-        return avatarID;
-    }
-
-    public void setAvatarID(int avatarID) {
-        this.avatarID = avatarID;
-    }
 
 }

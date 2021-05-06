@@ -7,6 +7,7 @@ public class Stat {
     private int descId;
     private int colorId;
 
+    private int lastProgress = 50;
     private int progress;
 
     public Stat(int imageId, int id, String name, int descId, int colorId) {
@@ -43,6 +44,10 @@ public class Stat {
     public int getColorId() {return this.colorId;}
 
     public void setProgress(int newProgress) {
-        if (newProgress >= 0 && newProgress <= 100) progress = newProgress;
+        if (newProgress >= 0 && newProgress <= 100) {
+            lastProgress = progress;
+            progress = newProgress;
+        }
     }
+    public int getLastProgress() {return lastProgress;}
 }

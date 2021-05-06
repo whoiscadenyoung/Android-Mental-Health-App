@@ -1,11 +1,5 @@
 package com.csci3397.cadenyoung.groupproject.ui.map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,6 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Location;
 import com.csci3397.cadenyoung.groupproject.model.User;
@@ -35,7 +35,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -180,7 +179,6 @@ public class LocationFragment extends Fragment {
                             //Get user info
                             User user = snapshot.getValue(User.class);
                             //Get user avatar
-                            int avatar = user.getAvatarID();
                             //TODO place avatar as marker from avatar ID
                             //Set user marker
                             googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));
@@ -202,7 +200,6 @@ public class LocationFragment extends Fragment {
                                 Location childLocation = snapshot.getValue(Location.class);
                                 Double cLat = childLocation.getLatitude();
                                 Double cLng = childLocation.getLongitude();
-
                                 //Read avatar of child from database
                                 DatabaseReference childRef = db.getReference("users");
 
@@ -210,7 +207,6 @@ public class LocationFragment extends Fragment {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         User user = snapshot.getValue(User.class);
-                                        int avatar = user.getAvatarID();
                                         //TODO place avatar as marker from avatar ID
                                         //Set user avatar
                                         googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));
