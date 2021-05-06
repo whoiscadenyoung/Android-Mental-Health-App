@@ -124,6 +124,7 @@ public class HomeFragment extends Fragment {
                     User user = snapshot.getValue(User.class);
                     lastDayTaken = user.getLastDayTaken();
                     setLastDay = true;
+
                 }
 
                 @Override
