@@ -1,10 +1,29 @@
 package com.csci3397.cadenyoung.groupproject.model;
 
+import java.util.ArrayList;
+
 public class UserStats {
     private String userID;
     private int stat1progress;
     private int stat2progress;
     private int stat3progress;
+    private int stat4progress;
+    private int stat5progress;
+    private int stat6progress;
+    private int stat7progress;
+
+    private UserStats() {}
+
+    public UserStats(String userID, int stat1progress, int stat2progress, int stat3progress, int stat4progress, int stat5progress, int stat6progress, int stat7progress) {
+        this.userID = userID;
+        this.stat1progress = stat1progress;
+        this.stat2progress = stat2progress;
+        this.stat3progress = stat3progress;
+        this.stat4progress = stat4progress;
+        this.stat5progress = stat5progress;
+        this.stat6progress = stat6progress;
+        this.stat7progress = stat7progress;
+    }
 
     public String getUserID() {
         return userID;
@@ -70,8 +89,4 @@ public class UserStats {
         this.stat7progress = stat7progress;
     }
 
-    private int stat4progress;
-    private int stat5progress;
-    private int stat6progress;
-    private int stat7progress;
 }

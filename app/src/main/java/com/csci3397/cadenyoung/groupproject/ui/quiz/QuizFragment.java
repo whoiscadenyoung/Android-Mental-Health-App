@@ -1,5 +1,8 @@
 package com.csci3397.cadenyoung.groupproject.ui.quiz;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +23,21 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
+import com.csci3397.cadenyoung.groupproject.model.User;
+import com.csci3397.cadenyoung.groupproject.model.UserStats;
 import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class QuizFragment extends Fragment {
 
@@ -41,11 +52,15 @@ public class QuizFragment extends Fragment {
     private View view;
     private SeekBar progessBarAnswer;
     private HomeViewModel homeViewModel;
+    private AlertDialogFragment dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
+        dialog = new AlertDialogFragment();
+        db = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -70,44 +85,40 @@ public class QuizFragment extends Fragment {
         return view;
     }
 
-    private void loadFirstQuestion()
-    {
-        quizViewModel.setText(getString(quiz.nextQuestion().getTextId()));
-    }
-
     private void loadButtons() {
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (!quiz.isFinalQuestion())
-                {
-                    if (!quiz.isInstructionsQuestion())
-                    {
-
+                if (!quiz.isFinalQuestion()) {
+                    if (!quiz.isInstructionsQuestion()) {
                         currentQuestion.setAnswer(progessBarAnswer.getProgress());
-                        progessBarAnswer.setVisibility(view.VISIBLE);
-                        //Toast.makeText(getActivity(), currentQuestion.getAnswer() + "", Toast.LENGTH_SHORT).show();
                     }
+                    progessBarAnswer.setVisibility(view.VISIBLE);
                     Log.d("Current Question", Integer.toString(quiz.getQuestionNum()));
                     currentQuestion = quiz.nextQuestion();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
                     setProgressBar();
-                    if (quiz.isFinalQuestion())
-                    {
+                    if (quiz.isFinalQuestion()) {
                         next.setText("Submit");
                     }
                 }
 
-                else
-                {
-                    setLastDayTaken();
-                    quizViewModel.setQuiz(quiz);
-                    setToDB();
-                    navigateToHome();
-                    Log.d("Quiz Submitted", quiz.toString());
-                    //TODO have the submit button take you back to the home page
+                else {
+                    Log.d("Before Network Check", "got here");
+                    if (isNetworkAvailable()) {
+                        setLastDayTaken();
+//                        quizViewModel.setQuiz(quiz);
+                        setToDB();
+                        Log.d("Quiz Submitted", quiz.toString());
+                        navigateToHome();
+
+                        //TODO have the submit button take you back to the home page
+                    }
+                    else {
+                        alertUserError();
+                    }
                 }
             }
         });
@@ -119,8 +130,15 @@ public class QuizFragment extends Fragment {
                 {
                     currentQuestion = quiz.previousQuestion();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
-                    setProgressBar();
                     next.setText("Next");
+                    if (quiz.getQuestionNum() == 1)
+                    {
+                        progessBarAnswer.setVisibility(view.GONE);
+                    }
+                    else
+                    {
+                        setProgressBar();
+                    }
                 }
                 else
                 {
@@ -135,12 +153,32 @@ public class QuizFragment extends Fragment {
     }
 
     private void setToDB() {
-        // call stats
+        String userID = firebaseAuth.getUid();
+        myRef = db.getReference("stats");
+
+        //Read user's current stats from database
+        myRef.child(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //Get user info
+                UserStats userStats = snapshot.getValue(UserStats.class);
+                Log.d("Checking Quiz Dtabase: ", String.valueOf(userStats.getStat1progress()));
+                Stats stats = new Stats(userStats);
+                //Update stats
+                userStats = stats.updateFromQuiz(userID, quiz);
+                Log.d("Checking Quiz Dtabase: ", "After Update: " + String.valueOf(userStats.getStat1progress()));
+                //Set new stats to database
+                myRef.child(userID).setValue(userStats);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Database read from user in quiz", "unsuccessful");
+            }
+        });
     }
 
     private void setLastDayTaken() {
-        db = FirebaseDatabase.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
         myRef = db.getReference("users");// path to the date stuff
         String userID = firebaseAuth.getUid();
         myRef.child(userID).child("lastDayTaken").setValue(homeViewModel.getDate());
@@ -158,7 +196,7 @@ public class QuizFragment extends Fragment {
             progessBarAnswer.setProgress(answer);
         }
     }
-//stuff changed
+
     private void navigateToHome() {
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(
@@ -169,6 +207,31 @@ public class QuizFragment extends Fragment {
                         .setExitAnim(android.R.animator.fade_out)
                         .build()
         );
+    }
+
+    private void alertUserError() {
+        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkCapabilities networkCapabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        boolean isAvailable = false;
+
+        if(networkCapabilities != null) {
+            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                isAvailable = true;
+            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                isAvailable = true;
+            }
+        } else {
+            Toast.makeText(getActivity(),"Sorry, network is not available",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        return isAvailable;
     }
 
 

@@ -41,26 +41,29 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.content.ContentValues.TAG;
 
 public class LoginFragment extends Fragment {
 
-    SignInButton signInButton;
-    Button loginButton;
-    Button registerPageButton;
-    EditText emailText;
-    EditText passwordText;
-    GoogleSignInClient googleSignInClient;
-    FirebaseAuth firebaseAuth;
-    String email;String password;
-    FragmentManager fragmentManager;
-    FragmentTransaction fragmentTransaction;
-    FirebaseDatabase db;
-    DatabaseReference myRef;
-    AlertDialogFragment dialog;
+    private SignInButton signInButton;
+    private Button loginButton;
+    private Button registerPageButton;
+    private EditText emailText;
+    private EditText passwordText;
+    private GoogleSignInClient googleSignInClient;
+    private FirebaseAuth firebaseAuth;
+    private String email;String password;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+    private FirebaseDatabase db;
+    private DatabaseReference myRef;
+    private AlertDialogFragment dialog;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -144,7 +147,6 @@ public class LoginFragment extends Fragment {
         if (firebaseUser != null) {
             //When user is already signed in
             //Redirect to homepage
-            Log.d("User: ", firebaseAuth.getUid());
             moveToHomepage();
         }
     }
@@ -152,7 +154,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("request Code", String.valueOf(requestCode));
         //Check condition
         if(requestCode == 100) {
             //When request code is equal to 100
@@ -162,10 +163,6 @@ public class LoginFragment extends Fragment {
             //Check condition
             if(signInAccountTask.isSuccessful()) {
                 //When google sign in successful
-                //Initialize string
-                //String s = "Google sign in successful";
-                //Display toast
-                //Toast.makeText(getActivity().getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                 try {
                     //Initialize sign in account
                     GoogleSignInAccount googleSignInAccount = signInAccountTask
@@ -186,11 +183,30 @@ public class LoginFragment extends Fragment {
                                         if(task.isSuccessful()) {
                                             //When task is successful
                                             //Redirect to homepage
-                                            if(task.getResult().getAdditionalUserInfo().isNewUser()){
-                                                addUserToDB(firebaseAuth.getCurrentUser());
-                                            }
+                                            String userID = firebaseAuth.getUid();
+                                            db = FirebaseDatabase.getInstance();
+                                            myRef = db.getReference("users");
+
+                                            myRef.child(userID).addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    User user = snapshot.getValue(User.class);
+                                                    if(user == null) {
+                                                        addUserToDB(firebaseAuth.getCurrentUser());
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Log.d("Database read from user in google sign in", "unsuccessful");
+                                                }
+                                            });
+//                                            if(task.getResult().getAdditionalUserInfo().isNewUser()){
+//                                                Log.d("got to task successful", "is new user");
+//                                                addUserToDB(firebaseAuth.getCurrentUser());
+//                                            }
+                                            Log.d("got to task successful", "after new user");
                                             moveToHomepage();
-                                            //Toast.makeText(getActivity(), "sign in successful" , Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
                                         }
@@ -208,17 +224,21 @@ public class LoginFragment extends Fragment {
     }
 
     private void addUserToDB(FirebaseUser user) {
+        Log.d("got to add to database", "start");
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
-        if(user.getUid() == null) Log.d("userID", "null");
         String name = user.getDisplayName();
         String email = user.getEmail();
         String userID = user.getUid();
 
+        //Add user to user table
         User currentUser = new User(name, email, userID, "never", 1);
         myRef.child(userID).setValue(currentUser);
-//TODO add the stats to the database
-//        UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
+        Log.d("got to add to database", "start");
+        //Add default stats for user
+        DatabaseReference statsRef = db.getReference("stats");
+        UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
+        statsRef.child(userID).setValue(userStats);
         Log.d("registered", "into database");
     }
 
