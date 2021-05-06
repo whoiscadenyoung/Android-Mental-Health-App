@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -28,10 +27,7 @@ import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Question;
 import com.csci3397.cadenyoung.groupproject.model.Quiz;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
-import com.csci3397.cadenyoung.groupproject.model.User;
-import com.csci3397.cadenyoung.groupproject.model.UserStats;
 import com.csci3397.cadenyoung.groupproject.ui.home.HomeViewModel;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -161,14 +157,27 @@ public class QuizFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //Get user info
-                UserStats userStats = snapshot.getValue(UserStats.class);
-                Log.d("Checking Quiz Dtabase: ", String.valueOf(userStats.getStat1progress()));
-                Stats stats = new Stats(userStats);
-                //Update stats
-                userStats = stats.updateFromQuiz(userID, quiz);
-                Log.d("Checking Quiz Dtabase: ", "After Update: " + String.valueOf(userStats.getStat1progress()));
-                //Set new stats to database
-                myRef.child(userID).setValue(userStats);
+                // UserStats userStats = snapshot.getValue(UserStats.class);
+                for (Question question : quiz.getQuestions()) {
+                    Log.d("QUIZ QUESTION TYPE: ", question.getQuestionType());
+                }
+                Stats stats = snapshot.getValue(Stats.class);
+                if (stats == null) {
+                    Log.d("Null Stats Object", "Can't get the Stats object from database");
+                } else {
+                    Log.d("Checking Quiz Database: ", String.valueOf(stats.getStats().get("mental").getProgress()));
+                    //for (Stat stat : stats.getStats().values().toArray(new Stat[0])) {
+                    //    Log.d("GOT STAT: ", stat.getName());
+                    //}
+                    // Stats stats = new Stats(userStats);
+                    //Update stats
+                    // userStats = stats.updateFromQuiz(userID, quiz);
+                    stats.quizUpdate(quiz);
+                    //stats.updateStat("mental", 1);
+                    Log.d("Checking Quiz Database: ", "After Update: " + stats.getStats().get("mental").getProgress());
+                    //Set new stats to database
+                    myRef.child(userID).setValue(stats);
+                }
             }
 
             @Override

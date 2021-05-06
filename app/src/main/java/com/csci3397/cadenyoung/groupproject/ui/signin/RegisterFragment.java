@@ -2,10 +2,6 @@ package com.csci3397.cadenyoung.groupproject.ui.signin;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,8 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -153,7 +153,14 @@ public class RegisterFragment extends Fragment {
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
         User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never", 1);
-        myRef.child(firebaseAuth.getUid()).setValue(user);
+
+        String userID = firebaseAuth.getUid();
+        assert userID != null;
+        myRef.child(userID).setValue(user);
+        Log.d("registered", "into database");
+
+        Stats stats = new Stats();
+        db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");
     }
 

@@ -5,13 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +14,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
+import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
-import com.csci3397.cadenyoung.groupproject.model.UserStats;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -235,10 +234,11 @@ public class LoginFragment extends Fragment {
         User currentUser = new User(name, email, userID, "never", 1);
         myRef.child(userID).setValue(currentUser);
         Log.d("got to add to database", "start");
+
         //Add default stats for user
-        DatabaseReference statsRef = db.getReference("stats");
-        UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
-        statsRef.child(userID).setValue(userStats);
+        // UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
+        Stats stats = new Stats();
+        db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");
     }
 

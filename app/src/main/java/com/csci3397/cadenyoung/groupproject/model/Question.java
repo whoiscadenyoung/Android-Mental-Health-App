@@ -6,8 +6,9 @@ public class Question {
     private int answer;
     private String questionType;
 
-    public  Question(int textId, String type){
+    public Question(int textId, String type){
         this.textId = textId;
+        this.questionType = type;
     }
     public Question(int imageId, int textId) {
         this.imageId = imageId;
