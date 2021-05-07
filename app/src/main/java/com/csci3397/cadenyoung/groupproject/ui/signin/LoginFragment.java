@@ -67,6 +67,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Initialize firebase auth and database
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
 
@@ -86,9 +87,6 @@ public class LoginFragment extends Fragment {
         dialog = new AlertDialogFragment();
 
         signInButton.setSize(SignInButton.SIZE_STANDARD);
-
-        //Initialize firebase auth and database
-
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
