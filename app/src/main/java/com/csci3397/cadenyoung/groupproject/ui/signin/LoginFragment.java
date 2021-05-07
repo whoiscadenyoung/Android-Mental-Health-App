@@ -231,7 +231,7 @@ public class LoginFragment extends Fragment {
         String userID = user.getUid();
 
         //Add user to user table
-        User currentUser = new User(name, email, userID, "never", 1);
+        User currentUser = new User(name, email, userID, "never");
         myRef.child(userID).setValue(currentUser);
         Log.d("got to add to database", "start");
 

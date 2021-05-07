@@ -152,7 +152,7 @@ public class RegisterFragment extends Fragment {
     private void addToDB() {
         db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
-        User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never", 1);
+        User user = new User(firstName + " " + lastName, email, firebaseAuth.getUid(), "never");
 
         String userID = firebaseAuth.getUid();
         assert userID != null;

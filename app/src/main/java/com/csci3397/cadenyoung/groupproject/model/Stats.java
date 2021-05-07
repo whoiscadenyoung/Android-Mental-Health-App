@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Stats {
     private Map<String, Stat> stats;
+    private int avatarType;
 
     public Stats() {
         stats = new HashMap<String, Stat>();
@@ -45,6 +46,41 @@ public class Stats {
                 this.stats.get(newStat.getName()).setProgress(newStat.getProgress());
             }
         }
+    }
+
+    public void setAvatarType(int avatarType) {this.avatarType = avatarType;}
+    public int getAvatarType() {return this.avatarType;}
+
+    public int averageStats() {
+        int totalStats = 0;
+        for (Stat stat : stats.values()) {
+            totalStats += stat.getProgress();
+        }
+        return totalStats / stats.size();
+    }
+
+    public String returnAvatarPath() {
+        String fileName = "";
+
+        int averageStats = averageStats();
+        if (averageStats > 85) fileName += "happy_open";
+        else if (averageStats > 65) fileName += "happy";
+        else if (averageStats > 40) fileName += "meh";
+        else if (averageStats > 20) fileName += "teary";
+        else fileName += "unalive";
+
+        switch (getAvatarType()) {
+            case 1:
+                fileName += "_green";
+                break;
+            case 2:
+                fileName += "_blue";
+                break;
+            default:
+                fileName += "_green";
+                break;
+        }
+        return fileName;
     }
 
     public Map<String, Stat> getStats() {return stats;}
