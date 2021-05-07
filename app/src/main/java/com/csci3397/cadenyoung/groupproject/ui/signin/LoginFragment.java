@@ -88,10 +88,10 @@ public class LoginFragment extends Fragment {
                 email = emailText.getText().toString();
                 password = passwordText.getText().toString();
                 signIn(email, password);
-                if(isNetworkAvailable() ) {
+                if( ((HomeMainActivity) getActivity()).isNetworkAvailable() ) {
                     signIn(email, password);
                 } else {
-                    alertUserError();
+                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
                 }
             }
 
@@ -100,10 +100,10 @@ public class LoginFragment extends Fragment {
         registerPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()) {
+                if(((HomeMainActivity) getActivity()).isNetworkAvailable()) {
                     moveToRegisterPage();
                 } else {
-                    alertUserError();
+                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
                 }
             }
         });
@@ -124,13 +124,13 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isNetworkAvailable()) {
+                if( ((HomeMainActivity) getActivity()).isNetworkAvailable()) {
                     //Initialize sign in intent
                     Intent intent = googleSignInClient.getSignInIntent();
                     //Start activity for result
                     startActivityForResult(intent, 100);
                 } else {
-                    alertUserError();
+                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
                 }
             }
         });
@@ -308,29 +308,4 @@ public class LoginFragment extends Fragment {
         return valid;
     }
 
-
-    private void alertUserError() {
-        dialog.show(getActivity().getSupportFragmentManager(), "error dialog");
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkCapabilities networkCapabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-        boolean isAvailable = false;
-
-        if(networkCapabilities != null) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                isAvailable = true;
-            } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                isAvailable = true;
-            }
-        } else {
-            Toast.makeText(getActivity(),"Sorry, network is not available",
-                    Toast.LENGTH_LONG).show();
-        }
-
-        return isAvailable;
-    }
 }
