@@ -68,6 +68,13 @@ public class LoginFragment extends Fragment {
     public LoginFragment() {
         // Required empty public constructor
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,12 +90,14 @@ public class LoginFragment extends Fragment {
 
         signInButton.setSize(SignInButton.SIZE_STANDARD);
 
+        //Initialize firebase auth and database
+
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 email = emailText.getText().toString();
                 password = passwordText.getText().toString();
-                signIn(email, password);
                 if( ((MainActivity) getActivity()).isNetworkAvailable() ) {
                     signIn(email, password);
                 } else {
@@ -119,13 +128,10 @@ public class LoginFragment extends Fragment {
         //Initialize sign in client
         googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions);
 
-        //Initialize firebase auth
-        firebaseAuth = FirebaseAuth.getInstance();
-
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( ((MainActivity) getActivity()).isNetworkAvailable()) {
+                if(((MainActivity) getActivity()).isNetworkAvailable()) {
                     //Initialize sign in intent
                     Intent intent = googleSignInClient.getSignInIntent();
                     //Start activity for result
@@ -135,20 +141,20 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
+
+        Log.d("checkUserInDB is", String.valueOf(checkUserInDB()));
+        if(checkUserInDB()) {
+            moveToHomepage();
+            Log.d("logged in", "onStart");
+        }
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        //Initialize firebase user
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        //Check condition
-        if (firebaseUser != null) {
-            //When user is already signed in
-            //Redirect to homepage
-            moveToHomepage();
-        }
+
+
     }
 
     @Override
@@ -183,29 +189,9 @@ public class LoginFragment extends Fragment {
                                         if(task.isSuccessful()) {
                                             //When task is successful
                                             //Redirect to homepage
-                                            String userID = firebaseAuth.getUid();
-                                            db = FirebaseDatabase.getInstance();
-                                            myRef = db.getReference("users");
-
-                                            myRef.child(userID).addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    User user = snapshot.getValue(User.class);
-                                                    if(user == null) {
-                                                        addUserToDB(firebaseAuth.getCurrentUser());
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    Log.d("Database read from user in google sign in", "unsuccessful");
-                                                }
-                                            });
-//                                            if(task.getResult().getAdditionalUserInfo().isNewUser()){
-//                                                Log.d("got to task successful", "is new user");
-//                                                addUserToDB(firebaseAuth.getCurrentUser());
-//                                            }
+                                            if(!checkUserInDB()) addUserToDB(firebaseAuth.getCurrentUser());
                                             Log.d("got to task successful", "after new user");
+                                            Log.d("logged in with", "google sign in");
                                             moveToHomepage();
                                         } else {
                                             Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
@@ -225,7 +211,6 @@ public class LoginFragment extends Fragment {
 
     private void addUserToDB(FirebaseUser user) {
         Log.d("got to add to database", "start");
-        db = FirebaseDatabase.getInstance();
         myRef = db.getReference("users");
         String name = user.getDisplayName();
         String email = user.getEmail();
@@ -256,8 +241,7 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            moveToHomepage();
+                            if(checkUserInDB()) moveToHomepage();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -271,6 +255,35 @@ public class LoginFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private boolean checkUserInDB() {
+        final boolean[] ret = {false};
+        if(((MainActivity) getActivity()).isNetworkAvailable()) {
+            FirebaseUser fu = firebaseAuth.getCurrentUser();
+            if (fu == null) Log.d("fu is null", "idk");
+            //Instantiate database and userID
+            String userID = firebaseAuth.getUid();
+            //Log.d("userID is null", userID);
+            myRef = db.getReference("users");
+
+            myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    User user = snapshot.getValue(User.class);
+                    if(user == null) {
+                        ret[0] = true;
+                        Log.d("user is null", userID);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("Database read from user in google sign in", "unsuccessful");
+                }
+            });
+        }
+        return ret[0];
     }
 
 

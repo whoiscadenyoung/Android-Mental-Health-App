@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -185,8 +188,9 @@ public class MapFragment extends Fragment {
                             //Get user avatar
                             String avatarPath = userStats.returnAvatarPath();
                             int avatarId = view.getResources().getIdentifier(avatarPath, "drawable", view.getContext().getPackageName());
+                            ScaleDrawable img = new ScaleDrawable(ResourcesCompat.getDrawable(view.getResources(), avatarId, null), 0, (float) 0.1, (float) 0.1);
                             //Set user marker
-                            googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromResource(avatarId)));
+                            googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) img.getDrawable()).getBitmap())));
                         }
 
                         @Override
@@ -215,8 +219,9 @@ public class MapFragment extends Fragment {
                                         //Get child avatar
                                         String childAvatar = childStats.returnAvatarPath();
                                         int childAvatarId = view.getResources().getIdentifier(childAvatar, "drawable", view.getContext().getPackageName());
-                                        //Set user avatar
-                                        googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).title("Random User Location").icon(BitmapDescriptorFactory.fromResource(childAvatarId)));
+                                        ScaleDrawable img = new ScaleDrawable(ResourcesCompat.getDrawable(view.getResources(), childAvatarId, null), 0, (float) 0.5, (float) 0.5);
+                                        //Set child marker
+                                        googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).title("Random User Location").icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) img.getDrawable()).getBitmap())));
                                     }
 
                                     @Override
