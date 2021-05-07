@@ -1,9 +1,6 @@
 package com.csci3397.cadenyoung.groupproject.ui.home;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -12,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -93,7 +90,34 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        radioGroup = root.findViewById(R.id.radioGroup);
+        RadioButton greenButton = root.findViewById(R.id.greenButton);
+        RadioButton yellowButton = root.findViewById(R.id.yellowButton);
+
+        greenButton.setOnClickListener(v -> {
+            boolean checked = ((RadioButton) v).isChecked();
+
+            // Check which radio button was clicked
+            switch(v.getId()) {
+                case R.id.greenButton:
+                    if (checked)
+                        setToDB(1);
+                    break;
+            }
+        });
+
+        yellowButton.setOnClickListener(v -> {
+            boolean checked = ((RadioButton) v).isChecked();
+
+            // Check which radio button was clicked
+            switch(v.getId()) {
+                case R.id.yellowButton:
+                    if (checked)
+                        setToDB(2);
+                    break;
+            }
+        });
+
+        /*radioGroup = root.findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -106,7 +130,7 @@ public class HomeFragment extends Fragment {
                         break;
                 }
             }
-        });
+        });*/
 
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Calendar calendar = Calendar.getInstance();
@@ -218,6 +242,22 @@ public class HomeFragment extends Fragment {
                 Log.d("Database read from user in quiz", "unsuccessful");
             }
         });
+    }
+
+    public void clickRadio(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.greenButton:
+                if (checked)
+                    setToDB(1);
+                    break;
+            case R.id.yellowButton:
+                if (checked)
+                    setToDB(R.id.yellowButton);
+                    break;
+        }
     }
 
 }
