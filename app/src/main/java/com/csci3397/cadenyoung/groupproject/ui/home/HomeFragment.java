@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
     private int defaultAvatar;
     private ImageView avatarView;
     private RadioGroup radioGroup;
-
+    private DatabaseReference myRef;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = ViewModelProviders.of(requireActivity()).get(HomeViewModel.class);
@@ -99,10 +99,10 @@ public class HomeFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.greenButton:
-                        // TODO: update stats database; set avatarType to 1
+                        setToDB(1);
                         break;
                     case R.id.yellowButton:
-                        // TODO: update stats database; set avatarType to 2
+                        setToDB(2);
                         break;
                 }
             }
@@ -144,7 +144,8 @@ public class HomeFragment extends Fragment {
                     Stats stats = snapshot.getValue(Stats.class);
                     String avatarPath = stats.returnAvatarPath();
                     if (avatarPath != null) {
-                        int avatarId = root.getResources().getIdentifier(avatarPath, "drawable", root.getContext().getPackageName());
+                        //root.getContext().getPackageName()
+                        int avatarId = root.getResources().getIdentifier(avatarPath, "drawable", "com.csci3397.cadenyoung.groupproject");
                         avatarView.setImageDrawable(ResourcesCompat.getDrawable(root.getResources(), avatarId, null));
                     }
                     int avatarType = stats.getAvatarType();
@@ -192,6 +193,31 @@ public class HomeFragment extends Fragment {
                         .setExitAnim(android.R.animator.fade_out)
                         .build()
         );
+    }
+
+    private void setToDB(int avatarId) {
+        String userID = firebaseAuth.getUid();
+        myRef = db.getReference("stats");
+
+        //Read user's current stats from database
+
+        myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Stats stats = snapshot.getValue(Stats.class);
+                if (stats == null) {
+                    Log.d("Null Stats Object", "Can't get the Stats object from database");
+                } else {
+                    stats.setAvatarType(avatarId);
+                    myRef.child(userID).setValue(stats);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Database read from user in quiz", "unsuccessful");
+            }
+        });
     }
 
 }
