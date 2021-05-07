@@ -1,9 +1,6 @@
 package com.csci3397.cadenyoung.groupproject.ui.signin;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,10 +29,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -46,8 +41,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.concurrent.CountDownLatch;
 
 import static android.content.ContentValues.TAG;
 
@@ -66,27 +59,28 @@ public class LoginFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference myRef;
     private AlertDialogFragment dialog;
-    private boolean userIDLoggedIn;
+    private FirebaseUser firebaseUser;
 
     public LoginFragment() {
         // Required empty public constructor
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseDatabase.getInstance();
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_login, container, false);
+
         signInButton = view.findViewById(R.id.signInButton);
         loginButton = view.findViewById(R.id.loginButton);
         registerPageButton = view.findViewById(R.id.registerPageButton);
+
         emailText = view.findViewById(R.id.emailText);
         passwordText = view.findViewById(R.id.passwordText);
         dialog = new AlertDialogFragment();
@@ -97,73 +91,47 @@ public class LoginFragment extends Fragment {
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                email = emailText.getText().toString();
-                password = passwordText.getText().toString();
-                if( ((MainActivity) getActivity()).isNetworkAvailable() ) {
-                    signIn(email, password);
-                } else {
-                    ((MainActivity) getActivity()).alertUserError(dialog);
-                }
-            }
-
+            email = emailText.getText().toString();
+            password = passwordText.getText().toString();
+            if( ((MainActivity) getActivity()).isNetworkAvailable() ) {
+                signIn(email, password);
+            } else {
+                ((MainActivity) getActivity()).alertUserError(dialog);
+            }}
         });
 
         registerPageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                if(((HomeMainActivity) getActivity()).isNetworkAvailable()) {
-                    moveToRegisterPage();
-                } else {
-                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
-                }
-            }
+            if(((MainActivity) getActivity()).isNetworkAvailable()) {
+                moveToRegisterPage();
+            } else {
+                ((MainActivity) getActivity()).alertUserError(dialog);
+            }}
         });
 
         //Initialize sign in options
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(
-                GoogleSignInOptions.DEFAULT_SIGN_IN
-        ).requestIdToken("766404629826-f0k3quh22862hjh376rdmkdia9m9obpe.apps.googleusercontent.com")
-                .requestEmail()
-                .build();
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("766404629826-f0k3quh22862hjh376rdmkdia9m9obpe.apps.googleusercontent.com").requestEmail().build();
 
         //Initialize sign in client
         googleSignInClient = GoogleSignIn.getClient(requireContext(), googleSignInOptions);
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(((MainActivity) getActivity()).isNetworkAvailable()) {
-                    //Initialize sign in intent
-                    Intent intent = googleSignInClient.getSignInIntent();
-                    //Start activity for result
-                    startActivityForResult(intent, 100);
-                } else {
-                    ((MainActivity) getActivity()).alertUserError(dialog);
-                }
+        signInButton.setOnClickListener(v -> {
+            if(((MainActivity) getActivity()).isNetworkAvailable()) {
+                //Initialize sign in intent
+                Intent intent = googleSignInClient.getSignInIntent();
+                //Start activity for result
+                startActivityForResult(intent, 100);
+            } else {
+                ((MainActivity) getActivity()).alertUserError(dialog);
             }
         });
 
-//        Log.d("checkUserInDB is", String.valueOf(checkUserInDB()));
-//        if(checkUserInDB()) {
-//            moveToHomepage();
-//            Log.d("logged in", "onStart");
-//        }
-
-
-        checkUserInDB();
-
-        if(userIDLoggedIn) moveToHomepage();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) checkUserInDB();
 
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
     }
 
     @Override
@@ -173,40 +141,31 @@ public class LoginFragment extends Fragment {
         if(requestCode == 100) {
             //When request code is equal to 100
             //Initialize task
-            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn
-                    .getSignedInAccountFromIntent(data);
+            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             //Check condition
             if(signInAccountTask.isSuccessful()) {
                 //When google sign in successful
                 try {
                     //Initialize sign in account
-                    GoogleSignInAccount googleSignInAccount = signInAccountTask
-                            .getResult(ApiException.class);
+                    GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
                     //Check condition
                     if(googleSignInAccount != null) {
                         //When sign in account is not equal to null
                         //Initialize auth credential
-                        AuthCredential authCredential = GoogleAuthProvider
-                                .getCredential(googleSignInAccount.getIdToken(),
-                                        null);
+                        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
                         //Check credential
-                        firebaseAuth.signInWithCredential(authCredential)
-                                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        //Check condition
-                                        if(task.isSuccessful()) {
-                                            //When task is successful
-                                            //Redirect to homepage
-                                            if(!userIDLoggedIn) addUserToDB(firebaseAuth.getCurrentUser());
-                                            Log.d("got to task successful", "after new user");
-                                            Log.d("logged in with", "google sign in");
-                                            moveToHomepage();
-                                        } else {
-                                            Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(requireActivity(), task -> {
+                            //Check condition
+                            if(task.isSuccessful()) {
+                                //When task is successful
+                                //Redirect to homepage
+                                checkUserInDB();
+                                Log.d("got to task successful", "after new user");
+                                Log.d("logged in with", "google sign in");
+                            } else {
+                                Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 } catch (ApiException e) {
                     e.printStackTrace();
@@ -244,35 +203,29 @@ public class LoginFragment extends Fragment {
         }
 
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            if(userIDLoggedIn) moveToHomepage();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                passwordText.setError("The password is invalid or the user does not have a password");
-                            }
-                            if(task.getException() instanceof FirebaseAuthInvalidUserException) {
-                                emailText.setError("Email is not registered");
-                            }
-
-                        }
+            .addOnCompleteListener(requireActivity(), task -> {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithEmail:success");
+                    moveToHomepage();
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                    if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                        passwordText.setError("The password is invalid or the user does not have a password");
                     }
-                });
+                    if(task.getException() instanceof FirebaseAuthInvalidUserException) {
+                        emailText.setError("Email is not registered");
+                    }
+
+                }
+            });
     }
 
     private void checkUserInDB() {
-        //final boolean[] ret = {false};
-        CountDownLatch countDownLatch = new CountDownLatch(1);
         if(((MainActivity) getActivity()).isNetworkAvailable()) {
-            FirebaseUser fu = firebaseAuth.getCurrentUser();
-            if (fu == null) Log.d("fu is null", "idk");
             //Instantiate database and userID
+            firebaseUser = firebaseAuth.getCurrentUser();
             String userID = firebaseAuth.getUid();
             //Log.d("userID is null", userID);
             myRef = db.getReference("users");
@@ -281,29 +234,18 @@ public class LoginFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
-                    if(user != null) {
-                        userIDLoggedIn = true;
-                        //ret[0] = true;
-                        Log.d("user is  not null", userID);
+                    if(user == null) {
+                        addUserToDB(firebaseUser);
                     }
-                    countDownLatch.countDown();
+                    moveToHomepage();
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.d("Database read from user in google sign in", "unsuccessful");
-                    countDownLatch.countDown();
                 }
 
             });
-
-
         }
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            Log.e("Interrupted Exception", e.getMessage());
-        }
-        //return ret[0];
     }
 
 
