@@ -24,6 +24,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
+import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
 import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
@@ -122,8 +123,12 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
-                    lastDayTaken = user.getLastDayTaken();
-                    setLastDay = true;
+                    if(user == null) {
+                        lastDayTaken = today;
+                    } else {
+                        lastDayTaken = user.getLastDayTaken();
+                        setLastDay = true;
+                    }
 
                 }
 

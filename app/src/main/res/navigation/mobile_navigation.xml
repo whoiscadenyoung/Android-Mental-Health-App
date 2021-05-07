@@ -24,9 +24,9 @@
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.csci3397.cadenyoung.groupproject.ui.map.LocationFragment"
+        android:name="com.csci3397.cadenyoung.groupproject.ui.map.MapFragment"
         android:label="@string/title_map"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_home"

@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -24,10 +22,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Location;
+import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -52,11 +52,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class LocationFragment extends Fragment {
+public class MapFragment extends Fragment {
     private FusedLocationProviderClient client;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase db;
     private DatabaseReference myRef;
+    private View view;
 
     //@Nullable
     @Override
@@ -64,7 +65,7 @@ public class LocationFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         //Initialize view
-        View view = inflater.inflate(R.layout.fragment_location, container, false);
+        view = inflater.inflate(R.layout.fragment_map, container, false);
 
         if (((HomeMainActivity) getActivity()).isNetworkAvailable()) {
             //Initialize location client
@@ -174,17 +175,18 @@ public class LocationFragment extends Fragment {
                     //Read current user from users
                     String userID = firebaseAuth.getUid();
                     db = FirebaseDatabase.getInstance();
-                    myRef = db.getReference("users");
+                    myRef = db.getReference("stats");
 
                     myRef.child(userID).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             //Get user info
-                            User user = snapshot.getValue(User.class);
+                            Stats userStats = snapshot.getValue(Stats.class);
                             //Get user avatar
-                            //TODO place avatar as marker from avatar ID
+                            String avatarPath = userStats.returnAvatarPath();
+                            int avatarId = view.getResources().getIdentifier(avatarPath, "drawable", view.getContext().getPackageName());
                             //Set user marker
-                            googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));
+                            googleMap.addMarker(markerOptions.position(loc).title("Current Location").icon(BitmapDescriptorFactory.fromResource(avatarId)));
                         }
 
                         @Override
@@ -204,15 +206,17 @@ public class LocationFragment extends Fragment {
                                 Double cLat = childLocation.getLatitude();
                                 Double cLng = childLocation.getLongitude();
                                 //Read avatar of child from database
-                                DatabaseReference childRef = db.getReference("users");
+                                DatabaseReference childRef = db.getReference("stats");
 
                                 childRef.child(uID).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        User user = snapshot.getValue(User.class);
-                                        //TODO place avatar as marker from avatar ID
+                                        Stats childStats = snapshot.getValue(Stats.class);
+                                        //Get child avatar
+                                        String childAvatar = childStats.returnAvatarPath();
+                                        int childAvatarId = view.getResources().getIdentifier(childAvatar, "drawable", view.getContext().getPackageName());
                                         //Set user avatar
-                                        googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).icon(BitmapDescriptorFactory.fromResource(R.drawable.robot)));
+                                        googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).title("Random User Location").icon(BitmapDescriptorFactory.fromResource(childAvatarId)));
                                     }
 
                                     @Override

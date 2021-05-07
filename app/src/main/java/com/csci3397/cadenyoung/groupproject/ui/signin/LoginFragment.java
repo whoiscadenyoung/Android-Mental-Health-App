@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.csci3397.cadenyoung.groupproject.AlertDialogFragment;
 import com.csci3397.cadenyoung.groupproject.HomeMainActivity;
+import com.csci3397.cadenyoung.groupproject.MainActivity;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
 import com.csci3397.cadenyoung.groupproject.model.User;
@@ -88,10 +89,10 @@ public class LoginFragment extends Fragment {
                 email = emailText.getText().toString();
                 password = passwordText.getText().toString();
                 signIn(email, password);
-                if( ((HomeMainActivity) getActivity()).isNetworkAvailable() ) {
+                if( ((MainActivity) getActivity()).isNetworkAvailable() ) {
                     signIn(email, password);
                 } else {
-                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
+                    ((MainActivity) getActivity()).alertUserError(dialog);
                 }
             }
 
@@ -124,13 +125,13 @@ public class LoginFragment extends Fragment {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( ((HomeMainActivity) getActivity()).isNetworkAvailable()) {
+                if( ((MainActivity) getActivity()).isNetworkAvailable()) {
                     //Initialize sign in intent
                     Intent intent = googleSignInClient.getSignInIntent();
                     //Start activity for result
                     startActivityForResult(intent, 100);
                 } else {
-                    ((HomeMainActivity) getActivity()).alertUserError(dialog);
+                    ((MainActivity) getActivity()).alertUserError(dialog);
                 }
             }
         });
@@ -236,7 +237,6 @@ public class LoginFragment extends Fragment {
         Log.d("got to add to database", "start");
 
         //Add default stats for user
-        // UserStats userStats = new UserStats(userID, 50, 50, 50, 50, 50, 50, 50);
         Stats stats = new Stats();
         db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");

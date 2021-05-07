@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun alertUserError(dialog: AlertDialogFragment) {
+        dialog.show(this.supportFragmentManager, "error dialog")
+    }
+
     fun isNetworkAvailable(): Boolean {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
@@ -48,7 +52,5 @@ class MainActivity : AppCompatActivity() {
     fun getActivityInstance(): MainActivity {
         return INSTANCE
     }
-
-
 
 }
