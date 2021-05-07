@@ -188,7 +188,7 @@ public class LoginFragment extends Fragment {
         Log.d("got to add to database", "start");
 
         //Add default stats for user
-        Stats stats = new Stats();
+        Stats stats = new Stats(50);
         db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");
     }
@@ -280,5 +280,6 @@ public class LoginFragment extends Fragment {
         }
         return valid;
     }
+
 
 }

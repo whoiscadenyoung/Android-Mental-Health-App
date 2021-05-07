@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment {
         defaultAvatar = R.drawable.fitness;
         avatarView = root.findViewById(R.id.avatarImage);
         avatarView.setImageDrawable(ResourcesCompat.getDrawable(getResources(), defaultAvatar, null));
+        radioGroup = root.findViewById(R.id.radioGroup);
 
         goToQuizBtn = root.findViewById(R.id.goToQuizBtn);
         goToQuizBtn.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +87,7 @@ public class HomeFragment extends Fragment {
                 //firebase sign out
                 firebaseAuth.signOut();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -117,7 +119,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        /*radioGroup = root.findViewById(R.id.radioGroup);
+        /*
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {

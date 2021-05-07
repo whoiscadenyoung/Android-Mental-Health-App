@@ -44,7 +44,7 @@ public class StatisticsFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_statistics, container, false);
 
         // Dummy stats
-        stats = new Stats(0);
+        stats = new Stats();
 
         // Firebase
         firebaseAuth = FirebaseAuth.getInstance();

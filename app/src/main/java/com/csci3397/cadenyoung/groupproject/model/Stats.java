@@ -43,7 +43,8 @@ public class Stats {
     public void replaceStats(Stats newStats) {
         for (Stat newStat : newStats.getStats().values()) {
             if (this.stats.containsKey(newStat.getName())) {
-                this.stats.get(newStat.getName()).setProgress(newStat.getProgress());
+                this.stats.get(newStat.getName()).replaceProgress(newStat.getProgress());
+                this.stats.get(newStat.getName()).replaceLastProgress(newStat.getLastProgress());
             }
         }
     }
@@ -74,7 +75,7 @@ public class Stats {
                 fileName += "_green";
                 break;
             case 2:
-                fileName += "_blue";
+                fileName += "_yellow";
                 break;
             default:
                 fileName += "_green";

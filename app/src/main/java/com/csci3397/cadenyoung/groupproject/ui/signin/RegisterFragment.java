@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -97,6 +98,9 @@ public class RegisterFragment extends Fragment {
                             if(task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 newEmailText.setError("The email address is already in use by another account");
                             }
+                            if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                newEmailText.setError("The email address is badly formatted");
+                            }
                         }
                     }
                 });
@@ -159,7 +163,7 @@ public class RegisterFragment extends Fragment {
         myRef.child(userID).setValue(user);
         Log.d("registered", "into database");
 
-        Stats stats = new Stats();
+        Stats stats = new Stats(50);
         db.getReference("stats").child(userID).setValue(stats);
         Log.d("registered", "into database");
     }

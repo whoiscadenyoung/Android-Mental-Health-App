@@ -49,5 +49,17 @@ public class Stat {
             progress = newProgress;
         }
     }
+
     public int getLastProgress() {return lastProgress;}
+
+    public void replaceProgress(int newProgress) {
+        if (newProgress >= 0 && newProgress <= 100) {
+            progress = newProgress;
+        }
+    }
+    public void replaceLastProgress(int newProgress) {
+        if (newProgress >= 0 && newProgress <= 100) {
+            lastProgress = newProgress;
+        }
+    }
 }

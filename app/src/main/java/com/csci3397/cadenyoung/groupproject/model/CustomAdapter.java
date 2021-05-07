@@ -121,16 +121,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
         // Load in the image and set it in the view
         int imageId = stat.getImageId();
         Drawable image = ResourcesCompat.getDrawable(resources, imageId, null);
+        viewHolder.getStatImage().setImageDrawable(image);
 
         // Load in the progress and set the up or down image
         int lastProg = stat.getLastProgress();
         int prog = stat.getProgress();
+
         Drawable upImage = ResourcesCompat.getDrawable(resources, R.drawable.up, null);
         Drawable downImage = ResourcesCompat.getDrawable(resources, R.drawable.down, null);
-        if (lastProg < prog) viewHolder.getLastStat().setImageDrawable(upImage);
-        else viewHolder.getLastStat().setImageDrawable(downImage);
 
-        viewHolder.getStatImage().setImageDrawable(image);
+        if (prog > lastProg) {
+            Log.d("STATS LAST PROG", String.valueOf(lastProg));
+            Log.d("STATS PROG", String.valueOf(prog));
+            viewHolder.getLastStat().setImageDrawable(upImage);
+        }
+        else viewHolder.getLastStat().setImageDrawable(downImage);
 
         // Load in the description ID, pull description from strings, set text in view
         int descId = stat.getDescId();
