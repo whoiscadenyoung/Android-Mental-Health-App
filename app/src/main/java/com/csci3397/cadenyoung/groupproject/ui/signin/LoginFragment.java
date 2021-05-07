@@ -47,6 +47,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.CountDownLatch;
+
 import static android.content.ContentValues.TAG;
 
 public class LoginFragment extends Fragment {
@@ -64,6 +66,7 @@ public class LoginFragment extends Fragment {
     private FirebaseDatabase db;
     private DatabaseReference myRef;
     private AlertDialogFragment dialog;
+    private boolean userIDLoggedIn;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -142,11 +145,17 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        Log.d("checkUserInDB is", String.valueOf(checkUserInDB()));
-        if(checkUserInDB()) {
-            moveToHomepage();
-            Log.d("logged in", "onStart");
-        }
+//        Log.d("checkUserInDB is", String.valueOf(checkUserInDB()));
+//        if(checkUserInDB()) {
+//            moveToHomepage();
+//            Log.d("logged in", "onStart");
+//        }
+
+
+        checkUserInDB();
+
+        if(userIDLoggedIn) moveToHomepage();
+
         return view;
     }
 
@@ -189,7 +198,7 @@ public class LoginFragment extends Fragment {
                                         if(task.isSuccessful()) {
                                             //When task is successful
                                             //Redirect to homepage
-                                            if(!checkUserInDB()) addUserToDB(firebaseAuth.getCurrentUser());
+                                            if(!userIDLoggedIn) addUserToDB(firebaseAuth.getCurrentUser());
                                             Log.d("got to task successful", "after new user");
                                             Log.d("logged in with", "google sign in");
                                             moveToHomepage();
@@ -241,7 +250,7 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            if(checkUserInDB()) moveToHomepage();
+                            if(userIDLoggedIn) moveToHomepage();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -257,8 +266,9 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private boolean checkUserInDB() {
-        final boolean[] ret = {false};
+    private void checkUserInDB() {
+        //final boolean[] ret = {false};
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         if(((MainActivity) getActivity()).isNetworkAvailable()) {
             FirebaseUser fu = firebaseAuth.getCurrentUser();
             if (fu == null) Log.d("fu is null", "idk");
@@ -271,19 +281,29 @@ public class LoginFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     User user = snapshot.getValue(User.class);
-                    if(user == null) {
-                        ret[0] = true;
-                        Log.d("user is null", userID);
+                    if(user != null) {
+                        userIDLoggedIn = true;
+                        //ret[0] = true;
+                        Log.d("user is  not null", userID);
                     }
+                    countDownLatch.countDown();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.d("Database read from user in google sign in", "unsuccessful");
+                    countDownLatch.countDown();
                 }
+
             });
+
+
         }
-        return ret[0];
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            Log.e("Interrupted Exception", e.getMessage());
+        }
+        //return ret[0];
     }
 
 
