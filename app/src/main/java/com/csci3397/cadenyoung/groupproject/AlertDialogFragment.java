@@ -13,7 +13,7 @@ public class AlertDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Opps").setMessage("Internet no available. Please try again when connected!")
+        builder.setTitle("Opps").setMessage("Internet not available. Please try again when connected!")
                 .setPositiveButton("OK",null);
         return builder.create();
     }

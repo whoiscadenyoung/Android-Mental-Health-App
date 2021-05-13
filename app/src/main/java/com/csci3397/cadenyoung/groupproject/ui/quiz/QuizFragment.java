@@ -120,7 +120,7 @@ public class QuizFragment extends Fragment {
                     currentQuestion = quiz.previousQuestion();
                     quizViewModel.setText(getString(currentQuestion.getTextId()));
                     next.setText("Next");
-                    if (quiz.getQuestionNum() == 1)
+                    if (quiz.getQuestionNum() == 0)
                     {
                         progressBarAnswer.setVisibility(view.GONE);
                     }
@@ -176,7 +176,7 @@ public class QuizFragment extends Fragment {
         }
         else
         {
-            progressBarAnswer.setProgress(answer);
+            progressBarAnswer.setProgress(answer-1);
         }
     }
 
