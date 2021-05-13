@@ -52,6 +52,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Random;
+
 
 public class MapFragment extends Fragment {
     private FusedLocationProviderClient client;
@@ -217,8 +219,17 @@ public class MapFragment extends Fragment {
                                         String childAvatar = childStats.returnAvatarPath();
                                         int childAvatarId = view.getResources().getIdentifier(childAvatar, "drawable", view.getContext().getPackageName());
                                         ScaleDrawable img = new ScaleDrawable(ResourcesCompat.getDrawable(view.getResources(), childAvatarId, null), 0, (float) 0.5, (float) 0.5);
+                                        //Secure child location
+                                        Random rand = new Random();
+                                        double secureLat = cLat + rand.nextInt(10);
+                                        double secureLng = cLng - rand.nextInt(10);
+                                        //Check coordinates are in bounds
+                                        if(secureLat < -90) secureLat = -88;
+                                        else if (secureLat > 90) secureLat = 89;
+                                        if(secureLng < -180) secureLng = -178;
+                                        else if (secureLng > 180) secureLng = 179;
                                         //Set child marker
-                                        googleMap.addMarker(markerOptions.position(new LatLng(cLat, cLng)).title("Random User Location").icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) img.getDrawable()).getBitmap())));
+                                        googleMap.addMarker(markerOptions.position(new LatLng(secureLat, secureLng)).title("Random User Location").icon(BitmapDescriptorFactory.fromBitmap(((BitmapDrawable) img.getDrawable()).getBitmap())));
                                     }
 
                                     @Override
