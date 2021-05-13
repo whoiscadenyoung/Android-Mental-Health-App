@@ -1,7 +1,5 @@
 package com.csci3397.cadenyoung.groupproject.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class Location {
 
     private Double latitude;

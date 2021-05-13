@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment;
 import com.csci3397.cadenyoung.groupproject.R;
 import com.csci3397.cadenyoung.groupproject.model.Location;
 import com.csci3397.cadenyoung.groupproject.model.Stats;
-import com.csci3397.cadenyoung.groupproject.model.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,7 +39,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -62,7 +60,6 @@ public class MapFragment extends Fragment {
     private DatabaseReference myRef;
     private View view;
 
-    //@Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -256,8 +253,6 @@ public class MapFragment extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "Error finding current location", Toast.LENGTH_SHORT).show();
                 }
-                //Add marker on the map
-                //googleMap.addMarker(markerOptions);
             }
         });
     }

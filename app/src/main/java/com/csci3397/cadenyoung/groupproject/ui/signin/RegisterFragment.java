@@ -93,8 +93,6 @@ public class RegisterFragment extends Fragment {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.d(TAG, "createUserWithEmail:failure", task.getException());
-                            //Toast.makeText(getActivity(), "Authentication failed",
-                            //        Toast.LENGTH_SHORT).show();
                             if(task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 newEmailText.setError("The email address is already in use by another account");
                             }
@@ -161,11 +159,9 @@ public class RegisterFragment extends Fragment {
         String userID = firebaseAuth.getUid();
         assert userID != null;
         myRef.child(userID).setValue(user);
-        Log.d("registered", "into database");
 
         Stats stats = new Stats(50);
         db.getReference("stats").child(userID).setValue(stats);
-        Log.d("registered", "into database");
     }
 
 }

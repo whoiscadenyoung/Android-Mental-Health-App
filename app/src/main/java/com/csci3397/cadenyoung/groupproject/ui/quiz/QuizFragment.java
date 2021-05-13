@@ -1,8 +1,5 @@
 package com.csci3397.cadenyoung.groupproject.ui.quiz;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -85,11 +81,9 @@ public class QuizFragment extends Fragment {
     }
 
     private void loadButtons() {
-
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (!quiz.isFinalQuestion()) {
                     if (!quiz.isInstructionsQuestion()) {
                         currentQuestion.setAnswer(progressBarAnswer.getProgress() + 1);
@@ -105,15 +99,11 @@ public class QuizFragment extends Fragment {
                 }
 
                 else {
-                    Log.d("Before Network Check", "got here");
                     if (((HomeMainActivity) getActivity()).isNetworkAvailable()) {
                         setLastDayTaken();
-//                        quizViewModel.setQuiz(quiz);
                         setToDB();
                         Log.d("Quiz Submitted", quiz.toString());
                         navigateToHome();
-
-                        //TODO have the submit button take you back to the home page
                     }
                     else {
                         ((HomeMainActivity) getActivity()).alertUserError(dialog);
@@ -141,12 +131,8 @@ public class QuizFragment extends Fragment {
                 }
                 else
                 {
-                    // Firebase needs to pull the stats from the database
-                    // stats.updateFromQuiz(quiz)
                     navigateToHome();
                 }
-                //TODO create a way to back to the saved instance of the question
-
             }
         });
     }
@@ -156,7 +142,6 @@ public class QuizFragment extends Fragment {
         myRef = db.getReference("stats");
 
         //Read user's current stats from database
-
         myRef.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

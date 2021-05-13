@@ -10,8 +10,6 @@ public class QuizViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-
-
     private Quiz quiz;
 
     public QuizViewModel() {

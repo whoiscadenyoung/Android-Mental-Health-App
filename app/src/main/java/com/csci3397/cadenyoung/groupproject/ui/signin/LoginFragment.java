@@ -158,8 +158,6 @@ public class LoginFragment extends Fragment {
                                 //When task is successful
                                 //Redirect to homepage
                                 checkUserInDB();
-                                Log.d("got to task successful", "after new user");
-                                Log.d("logged in with", "google sign in");
                             } else {
                                 Toast.makeText(getActivity(), "Sign In Unsuccessful" , Toast.LENGTH_SHORT).show();
                             }
@@ -169,14 +167,12 @@ public class LoginFragment extends Fragment {
                     e.printStackTrace();
                 }
             } else{
-                Log.d("Sign In", "Was unsuccessful");
                 Log.d("Sign In", signInAccountTask.getException().toString());
             }
         }
     }
 
     private void addUserToDB(FirebaseUser user) {
-        Log.d("got to add to database", "start");
         myRef = db.getReference("users");
         String name = user.getDisplayName();
         String email = user.getEmail();
@@ -185,12 +181,10 @@ public class LoginFragment extends Fragment {
         //Add user to user table
         User currentUser = new User(name, email, userID, "never");
         myRef.child(userID).setValue(currentUser);
-        Log.d("got to add to database", "start");
 
         //Add default stats for user
         Stats stats = new Stats(50);
         db.getReference("stats").child(userID).setValue(stats);
-        Log.d("registered", "into database");
     }
 
 
@@ -245,7 +239,6 @@ public class LoginFragment extends Fragment {
             });
         }
     }
-
 
     private void moveToHomepage() {
         Intent intent = new Intent(this.getActivity(), HomeMainActivity.class);

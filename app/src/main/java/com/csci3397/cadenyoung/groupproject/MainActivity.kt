@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.csci3397.cadenyoung.groupproject.ui.signin.LoginFragment
 
-
-
 class MainActivity : AppCompatActivity() {
     lateinit var INSTANCE: MainActivity
 
@@ -24,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         )
         fragmentTransaction.commit()
         INSTANCE = this
-
     }
 
     fun alertUserError(dialog: AlertDialogFragment) {

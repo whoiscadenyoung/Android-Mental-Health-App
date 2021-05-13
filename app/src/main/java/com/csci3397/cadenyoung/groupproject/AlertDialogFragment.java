@@ -2,11 +2,7 @@ package com.csci3397.cadenyoung.groupproject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +17,4 @@ public class AlertDialogFragment extends DialogFragment {
                 .setPositiveButton("OK",null);
         return builder.create();
     }
-
-
 }

@@ -119,21 +119,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        /*
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.greenButton:
-                        setToDB(1);
-                        break;
-                    case R.id.yellowButton:
-                        setToDB(2);
-                        break;
-                }
-            }
-        });*/
-
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         Calendar calendar = Calendar.getInstance();
         String today = df.format(calendar.getTime());
